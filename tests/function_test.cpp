@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "test.hpp"
 #include "function.hpp"
@@ -14,5 +15,6 @@ inline void test_contstructor() {
 }
 
 void run_function_tests() {
+    std::cout << __func__ << std::endl;
     test_contstructor();
 }

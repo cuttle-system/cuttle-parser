@@ -3,7 +3,7 @@
 #include <string>
 
 #define AssertTrue(statement, message)                  \
-    _AssertTrue(statement, message, __FILE__, __LINE__)
+    husky::_AssertTrue(statement, message, __FILE__, __LINE__)
 
 namespace husky {
     void _AssertTrue(
