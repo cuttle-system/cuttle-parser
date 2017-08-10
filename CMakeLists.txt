@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 
+include(CMakeToolsHelpers OPTIONAL)
+
 file(GLOB SRCS "src/*.cpp")
 file(GLOB TEST_SRCS "tests/*.cpp")
 
