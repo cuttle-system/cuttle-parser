@@ -1,14 +1,13 @@
 #pragma once
 
 #include "token.hpp"
+#include <string>
 #include <vector>
-#include <memory>
 
 namespace husky {
-    class Tokenizer {
-    public:
-        static void Tokenize(
-            const std::string& query,
-            std::vector<std::unique_ptr<Token>>& tokens);
-    };
+    void tokenize(
+        const std::string& query,
+        std::vector<token_t *>& tokens,
+        unsigned short line = 1
+    );
 }

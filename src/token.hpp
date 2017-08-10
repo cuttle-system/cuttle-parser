@@ -2,26 +2,19 @@
 
 #include <string>
 
-enum {
-    NumberTokenType,
-    StringTokenType,
-    AtomTokenType
-};
-
 namespace husky {
-    class Token {
-    public:
-        Token(const std::string& value, unsigned line, unsigned col)
-            : value(value), line(line), col(col) {}
-
-        virtual int GetType() = 0;
-
-        virtual const std::string& GetValue() { return value; }
-        virtual int GetLine() { return line; }
-        virtual int GetCol() { return col; }
-    protected:
-        const std::string value;
-        const unsigned line;
-        const unsigned col;
+    enum token_type {
+        NUMBER_TOKEN,
+        STRING_TOKEN,
+        ATOM_TOKEN
     };
+
+    typedef struct token {
+        enum token_type type;
+        const std::string value;
+        const unsigned short line;
+        const unsigned short col;
+    } token_t;
+
+    bool operator>=(const token_t& l, const token_t& r);
 }

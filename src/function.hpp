@@ -2,24 +2,17 @@
 
 #include <string>
 
-enum function_type {
-    PrefixFunctionType,
-    InfixFunctionType,
-    PostFixFunctionType,
-    PostPrefixFunctionType
-};
-
 namespace husky {
-    class Function {
-    public:
-        Function(const std::string& name, int numberOfArgs)
-            : name(name), numberOfArgs(numberOfArgs) {}
-
-        virtual int GetType() = 0;
-        virtual int GetNumberOfArgs() { return numberOfArgs; }
-        virtual const std::string& GetName() { return name; }
-    protected:
-        const std::string name;
-        int numberOfArgs = 0;
+    enum function_type {
+        PREFIX_FUNCTION,
+        INFIX_FUNCTION,
+        POSTFIX_FUNCTION,
+        POST_PREFIX_FUNCTION
     };
+
+    typedef struct Function {
+        const std::string name;
+        enum function_type type;
+        int args_number = 0;
+    } function_t;
 }

@@ -1,47 +1,43 @@
 #include <string>
 #include <vector>
-#include <memory>
 #include <ctype.h>
 #include "token.hpp"
-#include "string_token.hpp"
-#include "atom_token.hpp"
-#include "number_token.hpp"
 #include "tokenizer.hpp"
 
-using namespace husky;
-
-void Tokenizer::Tokenize(
-    const std::string &query, std::vector<std::unique_ptr<Token>>& tokens
+void husky::tokenize(
+    const std::string &query,
+    std::vector<token_t *>& tokens,
+    unsigned short line
 ) {
-    int tokenType = AtomTokenType;
-    unsigned line = 1;
-    unsigned iStart = 0;
-    unsigned lineStart = 1;
-    unsigned iLineStart = 0;
+    using namespace husky;
+
+    int token_type = -1;
+    unsigned short i_start = 0, line_start = line, i_line_start = 0;
     std::string acc = "";
     std::string str = query + '\n';
 
     for (register unsigned i = 0; i < str.length(); ++i) {
-        if (str[i] == ' ' || str[i] == '\n') {
+        if (str[i] == ' ' || str[i] == '\n'
+            || (token_type == NUMBER_TOKEN && !isdigit(str[i]))
+            || (token_type == ATOM_TOKEN && isdigit(str[i]))
+        ) {
             if (acc != "") {
-                if (tokenType == NumberTokenType)
-                    tokens.push_back(std::make_unique<NumberToken>(
-                                         acc, lineStart, iStart + 1));
-                else if (tokenType == AtomTokenType)
-                    tokens.push_back(std::make_unique<AtomToken>(
-                                         acc, lineStart, iStart + 1));
+                tokens.push_back(new token_t {
+                    (enum token_type) token_type, acc, line_start, ++i_start
+                });
                 acc = "";
+                if (!(str[i] == ' ' || str[i] == '\n')) --i;
             }
             if (str[i] == '\n') {
-                iLineStart = i + 1;
+                i_line_start = i + 1;
                 ++line;
             }
-            iStart = i - iLineStart + 1;
-            lineStart = line;
+            i_start = i - i_line_start + 1;
+            line_start = line;
+            token_type = -1;
         } else {
             if (acc == "") {
-                if (isdigit(str[i])) tokenType = NumberTokenType;
-                else tokenType = AtomTokenType;
+                token_type = isdigit(str[i]) ? NUMBER_TOKEN : ATOM_TOKEN;
             }
             acc += str[i];
         }
