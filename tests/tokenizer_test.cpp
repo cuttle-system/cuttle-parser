@@ -198,7 +198,7 @@ inline void test_tokenize_not_separated_by_space_numbers_and_atoms() {
 }
 
 void run_tokenizer_tests() {
-    std::cout << __func__ << std::endl;
+    TESTCASE
     test_tokenize_basic_space_separated_atoms();
     test_tokenize_space_and_new_line_separated_atoms();
     test_tokenize_basic_space_separated_numbers();

@@ -39,7 +39,7 @@ inline void test_right_after() {
 }
 
 void run_token_tests() {
-    std::cout << __func__ << std::endl;
+    TESTCASE
     test_constructor();
     test_right_after();
 }

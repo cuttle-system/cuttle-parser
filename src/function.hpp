@@ -10,8 +10,7 @@ namespace husky {
         POST_PREFIX_FUNCTION
     };
 
-    typedef struct Function {
-        const std::string name;
+    typedef struct function {
         enum function_type type;
         int args_number = 0;
     } function_t;

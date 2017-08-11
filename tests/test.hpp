@@ -2,6 +2,8 @@
 
 #include <string>
 
+#define TESTCASE std::cout << __func__ << std::endl;
+
 #define AssertTrue(statement, message)                  \
     husky::_AssertTrue(statement, message, __FILE__, __LINE__)
 

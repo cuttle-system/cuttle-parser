@@ -20,6 +20,6 @@ inline void test_can_read_and_write_files() {
 }
 
 void run_file_access_tests() {
-    std::cout << __func__ << std::endl;
+    TESTCASE
     test_can_read_and_write_files();
 }
