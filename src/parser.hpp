@@ -6,5 +6,5 @@
 #include "token.hpp"
 
 namespace husky {
-    void parse(const std::vector<token_t *>& tokens, call_tree_t& tree, context_t& context);
+    void parse(const tokens_t& tokens, call_tree_t& tree, context_t& context);
 }

@@ -4,7 +4,8 @@
 #include "function.hpp"
 
 namespace husky {
+	using funcs_t = std::unordered_map<std::string, function_t>;
     typedef struct context {
-        std::unordered_map<std::string, function_t> funcs;
+        funcs_t funcs;
     } context_t;
 }

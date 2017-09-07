@@ -6,7 +6,7 @@
 
 void husky::tokenize(
     const std::string &query,
-    std::vector<token_t *>& tokens,
+    tokens_t& tokens,
     unsigned short line
 ) {
     using namespace husky;
@@ -22,7 +22,7 @@ void husky::tokenize(
             || (token_type == ATOM_TOKEN && isdigit(str[i]))
         ) {
             if (acc != "") {
-                tokens.push_back(new token_t {
+                tokens.push_back(token_t {
                     (enum token_type) token_type, acc, line_start, ++i_start
                 });
                 acc = "";

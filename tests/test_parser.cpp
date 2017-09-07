@@ -20,11 +20,11 @@ inline void test_parses_basic_function_call() {
 
     {
         call_tree_t tree;
-        std::vector<token_t *> tokens = {
-            new token_t {ATOM_TOKEN, "foo", 1, 1},
-            new token_t {NUMBER_TOKEN, "1", 1, 5},
-            new token_t {NUMBER_TOKEN, "2", 1, 7},
-            new token_t {NUMBER_TOKEN, "3", 1, 9}
+        std::vector<token_t> tokens = {
+            token_t {ATOM_TOKEN, "foo", 1, 1},
+            token_t {NUMBER_TOKEN, "1", 1, 5},
+            token_t {NUMBER_TOKEN, "2", 1, 7},
+            token_t {NUMBER_TOKEN, "3", 1, 9}
         };
         parse(tokens, tree, context);
         AssertTrue(tree.src.size() == 1, "Tree src size");        
@@ -34,11 +34,11 @@ inline void test_parses_basic_function_call() {
         AssertTrue(tree.src[0][3] == 3, "Argument 3 token number");
     }
     {
-        call_tree_t tree;        
-        std::vector<token_t *> tokens = {
-            new token_t {NUMBER_TOKEN, "1", 1, 1},
-            new token_t {ATOM_TOKEN, "bar", 1, 3},
-            new token_t {NUMBER_TOKEN, "2", 1, 7},
+        call_tree_t tree;
+        std::vector<token_t> tokens = {
+            token_t {NUMBER_TOKEN, "1", 1, 1},
+            token_t {ATOM_TOKEN, "bar", 1, 3},
+            token_t {NUMBER_TOKEN, "2", 1, 7},
         };
         parse(tokens, tree, context);
         AssertTrue(tree.src.size() == 1, "Tree src size");        
@@ -48,10 +48,10 @@ inline void test_parses_basic_function_call() {
     }
     {
         call_tree_t tree;        
-        std::vector<token_t *> tokens = {
-            new token_t {ATOM_TOKEN, "baz", 1, 1},
-            new token_t {NUMBER_TOKEN, "1", 1, 5},
-            new token_t {NUMBER_TOKEN, "2", 1, 7},
+        std::vector<token_t> tokens = {
+            token_t {ATOM_TOKEN, "baz", 1, 1},
+            token_t {NUMBER_TOKEN, "1", 1, 5},
+            token_t {NUMBER_TOKEN, "2", 1, 7},
         };
         parse(tokens, tree, context);
         AssertTrue(tree.src.size() == 1, "Tree src size");        
@@ -61,10 +61,10 @@ inline void test_parses_basic_function_call() {
     }
     {
         call_tree_t tree;        
-        std::vector<token_t *> tokens = {
-            new token_t {ATOM_TOKEN, "baz", 1, 1},
-            new token_t {NUMBER_TOKEN, "1", 1, 5},
-            new token_t {NUMBER_TOKEN, "2", 1, 7},
+        std::vector<token_t> tokens = {
+            token_t {ATOM_TOKEN, "baz", 1, 1},
+            token_t {NUMBER_TOKEN, "1", 1, 5},
+            token_t {NUMBER_TOKEN, "2", 1, 7},
         };
         parse(tokens, tree, context);
         AssertTrue(tree.src.size() == 1, "Tree src size");        

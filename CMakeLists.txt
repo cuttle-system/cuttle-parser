@@ -11,16 +11,21 @@ file(GLOB TEST_HEADERS "tests/*.hpp")
 set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_FLAGS_DEBUG
-  "${CMAKE_CXX_FLAGS_DEBUG} -Wall -std=c++17")
+  "${CMAKE_CXX_FLAGS_DEBUG} -std=c++14")
 set(CMAKE_CXX_FLAGS_RELEASE
-  "${CMAKE_CXX_FLAGS_RELEASE} -Wall -std=c++17")
+  "${CMAKE_CXX_FLAGS_RELEASE} -std=c++14")
 
 if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG
     "${CMAKE_CXX_FLAGS_DEBUG} -Wextra")
   set(CMAKE_CXX_FLAGS_RELEASE
     "${CMAKE_CXX_FLAGS_RELEASE} -Wextra")
-endif(UNIX)
+elseif(WIN32)
+	set(CMAKE_CXX_FLAGS_DEBUG
+	  "${CMAKE_CXX_FLAGS_DEBUG} /ZI")
+	set(CMAKE_CXX_FLAGS_RELEASE
+	  "${CMAKE_CXX_FLAGS_RELEASE} /Ox")
+endif()
 
 add_library(husky SHARED ${SRCS} ${HEADERS})
 add_executable(tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
