@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 
+#project(CuttleParser 0.1)
+
 include(CMakeToolsHelpers OPTIONAL)
 
 file(GLOB SRCS "src/*.cpp")
@@ -27,10 +29,10 @@ elseif(WIN32)
 	  "${CMAKE_CXX_FLAGS_RELEASE} /Ox")
 endif()
 
-add_library(husky SHARED ${SRCS} ${HEADERS})
+add_library(cuttle_parser SHARED ${SRCS} ${HEADERS})
 add_executable(tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
 
-target_include_directories(husky PRIVATE "src/")
+target_include_directories(cuttle_parser PRIVATE "src/")
 target_include_directories(tests PRIVATE "src/" "tests/")
 
-target_link_libraries(tests husky)
+target_link_libraries(tests cuttle_parser)
