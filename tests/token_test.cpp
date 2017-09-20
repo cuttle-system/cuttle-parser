@@ -2,7 +2,7 @@
 #include "test.hpp"
 #include "token.hpp"
 
-using namespace husky;
+using namespace cuttle;
 
 inline void test_constructor() {
     token_t tok {NUMBER_TOKEN, "1", 2, 10};

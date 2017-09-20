@@ -7,10 +7,10 @@
 #include "token.hpp"
 
 inline int parse_function_call(
-	const husky::tokens_t& tokens, husky::call_tree_t& tree, husky::context_t& context,
+	const cuttle::tokens_t& tokens, cuttle::call_tree_t& tree, cuttle::context_t& context,
 	int &i, int& before
 ) {
-	using namespace husky;
+	using namespace cuttle;
 
 	funcs_t::const_iterator& it = context.funcs.find(tokens[i].value);
 	if (it == context.funcs.end()) {
@@ -40,8 +40,8 @@ inline int parse_function_call(
 	return true;
 }
 
-void husky::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context) {
-	using namespace husky;
+void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context) {
+	using namespace cuttle;
 
 	int i = 0;
 	int before = 0;

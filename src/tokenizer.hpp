@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace husky {
+namespace cuttle {
     void tokenize(
         const std::string& query,
         tokens_t& tokens,

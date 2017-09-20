@@ -4,12 +4,12 @@
 #include "token.hpp"
 #include "tokenizer.hpp"
 
-void husky::tokenize(
+void cuttle::tokenize(
     const std::string &query,
     tokens_t& tokens,
     unsigned short line
 ) {
-    using namespace husky;
+    using namespace cuttle;
 
     int token_type = -1;
     unsigned short i_start = 0, line_start = line, i_line_start = 0;

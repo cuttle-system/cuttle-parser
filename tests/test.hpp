@@ -6,12 +6,12 @@
 #define TESTCASE std::cout << __func__ << std::endl;
 
 #define AssertTrue(statement, message)                  \
-    husky::_AssertTrue((statement), message, __FILE__, __LINE__)
+    cuttle::_AssertTrue((statement), message, __FILE__, __LINE__)
 
 #define AssertEqual(out, exp, message)					\
-	husky::_AssertTrue((out) == (exp), message,  __FILE__, __LINE__)
+	cuttle::_AssertTrue((out) == (exp), message,  __FILE__, __LINE__)
 
-namespace husky {
+namespace cuttle {
     void _AssertTrue(
         bool statement, const std::string& message, const char* file, int line
     );

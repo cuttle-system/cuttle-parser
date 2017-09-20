@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace husky {
+namespace cuttle {
 	enum token_type {
 		NUMBER_TOKEN,
 		STRING_TOKEN,

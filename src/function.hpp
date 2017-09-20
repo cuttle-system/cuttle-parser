@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace husky {
+namespace cuttle {
     enum function_type {
         PREFIX_FUNCTION,
         INFIX_FUNCTION,

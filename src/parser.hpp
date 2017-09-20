@@ -5,6 +5,6 @@
 #include "context.hpp"
 #include "token.hpp"
 
-namespace husky {
+namespace cuttle {
     void parse(const tokens_t& tokens, call_tree_t& tree, context_t& context);
 }

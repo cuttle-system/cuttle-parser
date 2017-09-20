@@ -7,6 +7,7 @@
 #include "parser.hpp"
 #include "call_tree.hpp"
 #include "context.hpp"
+#include "test_function_priority.hpp"
 
 using namespace cuttle;
 

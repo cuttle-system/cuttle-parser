@@ -4,7 +4,7 @@
 #include "test.hpp"
 #include "function.hpp"
 
-using namespace husky;
+using namespace cuttle;
 
 inline void test_contstructor() {
     function_t func {INFIX_FUNCTION, 2};

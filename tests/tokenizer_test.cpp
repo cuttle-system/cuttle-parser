@@ -7,7 +7,7 @@
 #include "token.hpp"
 #include "utils.hpp"
 
-using namespace husky;
+using namespace cuttle;
 
 inline void test_tokenize_basic_space_separated_atoms() {
     tokens_t tokens;

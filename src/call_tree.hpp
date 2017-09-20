@@ -2,9 +2,9 @@
 
 #include <vector>
 
-namespace husky {
-	using tree_src_type = std::vector<std::vector<int> >;
+namespace cuttle {
+	using tree_src_t = std::vector<std::vector<int> >;
     typedef struct call_tree {
-        tree_src_type src;
+        tree_src_t src;
     } call_tree_t;
 }
