@@ -1,0 +1,2 @@
+POSTPREFIX function type if implemented via post and prefix function types:
+'[' "1 2 3]"
