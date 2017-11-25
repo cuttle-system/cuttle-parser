@@ -12,6 +12,10 @@ inline int parse_function_call(
 ) {
 	using namespace cuttle;
 
+	if (tokens[i].type != ATOM_TOKEN) {
+		return false;
+	}
+
 	funcname_to_id_t::const_iterator& it = context.funcname_to_id.find(tokens[i].value);
 	if (it == context.funcname_to_id.end()) {
 		return false;
@@ -40,7 +44,13 @@ inline int parse_function_call(
 		int argi = prev;
 		int argi_prev = prev_prev;
 		while (tree.src[argi].size() != 0) {
-			function_id_t check_func_id = context.funcname_to_id[tokens[argi].value];
+			function_id_t check_func_id;
+			if (argi == tokens.size()) {
+				check_func_id = FUNCTION_ID_UNKNOWN;
+			}
+			else {
+				check_func_id = context.funcname_to_id[tokens[argi].value];
+			}
 			if (context.funcs_prior.priors[check_func_id].prior >= context.funcs_prior.priors[func_id].prior) {
 				break;
 			}
@@ -80,8 +90,17 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 
 	int i = 0;
 	int before = 0;
-	tree.src.resize(tokens.size());
-	for (; i < tokens.size(); ++i) {
-		parse_function_call(tokens, tree, context, i, before, i - 1);
+	tree.src.resize(tokens.size() + 1);
+	auto& args = tree.src.back();
+	int argn = 0;
+	for (; i < tokens.size(); ++i, ++argn) {
+		int saved_i = i;
+		parse_function_call(tokens, tree, context, i, argn, tree.src.size() - 1);
+		if (args.size() <= argn) {
+			args.push_back(saved_i);
+		}
+		else {
+			args[argn] = saved_i;
+		}
 	}
 }
