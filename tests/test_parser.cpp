@@ -63,7 +63,7 @@ inline void test_parses_basic_function_call() {
 		parse(tokens, tree, context);
 		AssertEqual(tree.src, (tree_src_t{
 			{},{ 0 },
-			{0}
+			{1}
 		}), "Tree src");
 	}
 }
@@ -127,7 +127,7 @@ inline void test_parses_nested_function_calls_of_one_type() {
 		AssertEqual(tree.src, (tree_src_t{
 			{},{ 0 },
 			{ 1 },
-			{0}
+			{2}
 		}), "Tree src");
 	}
 }
@@ -198,8 +198,8 @@ inline void test_parses_nested_function_calls_where_first_function_call_is_not_i
 
 void run_parser_tests() {
     TESTCASE
- //   test_parses_basic_function_call();
-	//test_parses_nested_function_calls_of_one_type();
-	//test_parses_nested_function_calls_with_different_priorities();
+    test_parses_basic_function_call();
+	test_parses_nested_function_calls_of_one_type();
+	test_parses_nested_function_calls_with_different_priorities();
 	test_parses_nested_function_calls_where_first_function_call_is_not_in_the_start();
 }
