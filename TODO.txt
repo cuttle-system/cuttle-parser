@@ -1,2 +1,4 @@
 POSTPREFIX function type if implemented via post and prefix function types:
 '[' "1 2 3]"
+
+INFIX function type parser and postfix bugs

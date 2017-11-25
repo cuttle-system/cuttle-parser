@@ -14,7 +14,6 @@ inline int parse_function_call(
 
 	funcname_to_id_t::const_iterator& it = context.funcname_to_id.find(tokens[i].value);
 	if (it == context.funcname_to_id.end()) {
-		++before;
 		return false;
 	}
 
@@ -26,30 +25,47 @@ inline int parse_function_call(
 		int j = i + 1;
 		for (int argn = 0; argn < func.args_number; ++argn, ++j) {
 			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' recieves " + std::to_string(func.args_number) + " arguments");
-			tree.src[i][argn] = j;
-			parse_function_call(tokens, tree, context, j, before, ((argn > 1) ? tree.src), );
+			tree.src[i][argn] = -1;
+			int saved_j = j;
+			parse_function_call(tokens, tree, context, j, argn, i, prev);
+			tree.src[i][argn] = saved_j;
 		}
 		i = j - 1;
-		++before;
 	}
 	else if (func.type == POSTFIX_FUNCTION) {
 		if (prev == -1) {
-			throw parse_error("'" + tokens[i].value + "' is postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+			throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
 		}
+		// TODO if previous is a prefix function and is not fully parsed yet
 		int argi = prev;
 		int argi_prev = prev_prev;
 		while (tree.src[argi].size() != 0) {
 			function_id_t check_func_id = context.funcname_to_id[tokens[argi].value];
-			if (context.funcs_prior.priors[check_func_id].prior > context.funcs_prior.priors[func_id].prior) {
+			if (context.funcs_prior.priors[check_func_id].prior >= context.funcs_prior.priors[func_id].prior) {
 				break;
 			}
+			if (context.funcs[check_func_id].type == POSTFIX_FUNCTION) {
+				throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+			}
 			argi_prev = argi;
-			argi = tree.src[argi].back();
+			
+			int j = 0;
+			while (j < tree.src[argi].size() && tree.src[argi][j] != -1) ++j;
+			if (j < 1) {
+				throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+			}
+			argi = tree.src[argi][j - 1];
 		}
 		tree.src[i][0] = argi;
 		if (argi_prev != -1) {
-			;
+			int j = 0;
+			while (j < tree.src[argi_prev].size() && tree.src[argi_prev][j] != -1) ++j;
+			if (j < 1) {
+				throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+			}
+			tree.src[argi_prev][j - 1] = i;
 		}
+		before -= 1;
 	}
 	else if (func.type == INFIX_FUNCTION) {
 		// TODO
@@ -66,6 +82,6 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 	int before = 0;
 	tree.src.resize(tokens.size());
 	for (; i < tokens.size(); ++i) {
-		parse_function_call(tokens, tree, context, i, before);
+		parse_function_call(tokens, tree, context, i, before, i - 1);
 	}
 }
