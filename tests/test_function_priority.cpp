@@ -4,59 +4,110 @@
 #include <vector>
 
 #include "test.hpp"
-#include "parser.hpp"
-#include "call_tree.hpp"
-#include "context.hpp"
 #include "test_function_priority.hpp"
+#include "function_priority.hpp"
 
 using namespace cuttle;
 
-inline void test_parses_basic_function_call() {
-    context_t context;
-
-    context.funcs.insert({"foo", function_t {PREFIX_FUNCTION, 3}});
-    context.funcs.insert({"bar", function_t {INFIX_FUNCTION, 2}});
-    context.funcs.insert({"baz", function_t {PREFIX_FUNCTION, 2}});
-    context.funcs.insert({"quxx", function_t {POSTFIX_FUNCTION, 1}});
-
-    {
-        call_tree_t tree;
-        std::vector<token_t> tokens = {
-            token_t {ATOM_TOKEN, "foo", 1, 1},
-            token_t {NUMBER_TOKEN, "1", 1, 5},
-            token_t {NUMBER_TOKEN, "2", 1, 7},
-            token_t {NUMBER_TOKEN, "3", 1, 9}
-        };
-        parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{ { 1, 2, 3 }, {}, {}, {} }), "Tree src");
-    }
-    //{
-    //    call_tree_t tree;
-    //    std::vector<token_t> tokens = {
-    //        token_t {NUMBER_TOKEN, "1", 1, 1},
-    //        token_t {ATOM_TOKEN, "bar", 1, 3},
-    //        token_t {NUMBER_TOKEN, "2", 1, 7},
-    //    };
-    //    parse(tokens, tree, context);
-    //    AssertTrue(tree.src.size() == 1, "Tree src size");        
-    //    AssertTrue(tree.src[0][0] == 1, "Function token number");
-    //    AssertTrue(tree.src[0][1] == 0, "Argument 1 token number");
-    //    AssertTrue(tree.src[0][2] == 2, "Argument 2 token number");
-    //}
+inline void test_priority_initialize() {
 	{
-		call_tree_t tree;
-		std::vector<token_t> tokens = {
-			token_t {ATOM_TOKEN, "baz", 1, 1},
-			token_t {NUMBER_TOKEN, "1", 1, 5},
-			token_t {NUMBER_TOKEN, "2", 1, 7},
-		};
-		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{ {1, 2}, {}, {} }), "Tree src");
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		AssertEqual(func_priors.priors, (function_priorities_t {
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, FUNCTION_ID_LAST }, 
+			{ FUNCTION_ID_UNKNOWN, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR }
+		}), "Function priorities");
+	}
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		initialize(func_priors);
+		AssertEqual(func_priors.priors, (function_priorities_t{
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, FUNCTION_ID_LAST },
+			{ FUNCTION_ID_UNKNOWN, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR }
+		}), "Function priorities");
+	}
+}
+
+inline void test_priority_push_basic() {
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		add(func_priors, 2, FUNCTION_ID_UNKNOWN);
+		AssertEqual(func_priors.priors, (function_priorities_t {
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 2 },
+			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
+			{ FUNCTION_ID_UNKNOWN, 1, FUNCTION_ID_LAST}
+		}), "Function priorities");
     }
-	// TODO: POSTFIX
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		add(func_priors, 2, FUNCTION_ID_UNKNOWN);
+		add(func_priors, 3, FUNCTION_ID_UNKNOWN);
+		AssertEqual(func_priors.priors, (function_priorities_t{
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 3 },
+			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
+			{ 3, 2, FUNCTION_ID_LAST },
+			{ FUNCTION_ID_UNKNOWN, 3, 2 }
+		}), "Function priorities");
+	}
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		add(func_priors, 2, FUNCTION_ID_UNKNOWN);
+		add(func_priors, 3, FUNCTION_ID_UNKNOWN);
+		add(func_priors, 4, FUNCTION_ID_UNKNOWN);
+		AssertEqual(func_priors.priors, (function_priorities_t{
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 4 },
+			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
+			{ 3, 2, FUNCTION_ID_LAST },
+			{ 4, 3, 2 },
+			{ FUNCTION_ID_UNKNOWN, 4, 3 }
+		}), "Function priorities");
+	}
+}
+
+inline void test_priority_push_at_any_position() {
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		add(func_priors, 2, FUNCTION_ID_UNKNOWN);
+		add(func_priors, 3, 2);
+		add(func_priors, 4, 3);
+		add(func_priors, 5, 2);
+		AssertEqual(func_priors.priors, (function_priorities_t{
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 2 },
+			{ 4, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
+			{ FUNCTION_ID_UNKNOWN, 2, 5 },
+			{ 5, 3, 4 },
+			{ 3, 4, FUNCTION_ID_LAST },
+			{ 2, 5, 3 }
+		}), "Function priorities");
+	}
+	{
+		function_priority_table_t func_priors;
+		initialize(func_priors);
+		add(func_priors, 2, FUNCTION_ID_UNKNOWN);
+		add(func_priors, 3, 2);
+		add(func_priors, 4, 3);
+		add(func_priors, 5, 4);
+		add(func_priors, 6, 5);
+		AssertEqual(func_priors.priors, (function_priorities_t{
+			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 2 },
+			{ 6, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
+			{ FUNCTION_ID_UNKNOWN, 2, 3 },
+			{ 2, 3, 4 },
+			{ 3, 4, 5 },
+			{ 4, 5, 6 },
+			{ 5, 6, FUNCTION_ID_LAST }
+		}), "Function priorities");
+	}
 }
 
 void run_function_priority_tests() {
-    TESTCASE
+	TESTCASE
+	test_priority_initialize();
     test_priority_push_basic();
+	test_priority_push_at_any_position();
 }

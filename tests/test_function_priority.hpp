@@ -1,3 +1,3 @@
 #pragma once
 
-void run_parser_tests();
+void run_function_priority_tests();

@@ -8,34 +8,53 @@
 
 inline int parse_function_call(
 	const cuttle::tokens_t& tokens, cuttle::call_tree_t& tree, cuttle::context_t& context,
-	int &i, int& before
+	int &i, int& before, int prev = -1, int prev_prev = -1
 ) {
 	using namespace cuttle;
 
-	funcs_t::const_iterator& it = context.funcs.find(tokens[i].value);
-	if (it == context.funcs.end()) {
+	funcname_to_id_t::const_iterator& it = context.funcname_to_id.find(tokens[i].value);
+	if (it == context.funcname_to_id.end()) {
 		++before;
 		return false;
 	}
 
-	const function_t& func = it->second;
+	function_id_t func_id = it->second;
+	const function_t& func = context.funcs[func_id];
 	int func_i = i;
-	int j = i + 1;
 	tree.src[i].resize(func.args_number);
 	if (func.type == PREFIX_FUNCTION) {
+		int j = i + 1;
 		for (int argn = 0; argn < func.args_number; ++argn, ++j) {
 			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' recieves " + std::to_string(func.args_number) + " arguments");
 			tree.src[i][argn] = j;
-			parse_function_call(tokens, tree, context, j, before);
+			parse_function_call(tokens, tree, context, j, before, ((argn > 1) ? tree.src), );
+		}
+		i = j - 1;
+		++before;
+	}
+	else if (func.type == POSTFIX_FUNCTION) {
+		if (prev == -1) {
+			throw parse_error("'" + tokens[i].value + "' is postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+		}
+		int argi = prev;
+		int argi_prev = prev_prev;
+		while (tree.src[argi].size() != 0) {
+			function_id_t check_func_id = context.funcname_to_id[tokens[argi].value];
+			if (context.funcs_prior.priors[check_func_id].prior > context.funcs_prior.priors[func_id].prior) {
+				break;
+			}
+			argi_prev = argi;
+			argi = tree.src[argi].back();
+		}
+		tree.src[i][0] = argi;
+		if (argi_prev != -1) {
+			;
 		}
 	}
-	// TODO
-	//INFIX_FUNCTION,
-	//POSTFIX_FUNCTION,
-	//POST_PREFIX_FUNCTION
-	i = j - 1;
-
-	++before;
+	else if (func.type == INFIX_FUNCTION) {
+		// TODO
+		throw std::logic_error("no implemented");
+	}
 
 	return true;
 }
