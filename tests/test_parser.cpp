@@ -31,19 +31,19 @@ inline void test_parses_basic_function_call() {
         parse(tokens, tree, context);
 		AssertEqual(tree.src, (tree_src_t{ { 1, 2, 3 }, {}, {}, {}, {0} }), "Tree src");
     }
-    //{
-    //    call_tree_t tree;
-    //    std::vector<token_t> tokens = {
-    //        token_t {NUMBER_TOKEN, "1", 1, 1},
-    //        token_t {ATOM_TOKEN, "bar", 1, 3},
-    //        token_t {NUMBER_TOKEN, "2", 1, 7},
-    //    };
-    //    parse(tokens, tree, context);
-    //    AssertTrue(tree.src.size() == 1, "Tree src size");        
-    //    AssertTrue(tree.src[0][0] == 1, "Function token number");
-    //    AssertTrue(tree.src[0][1] == 0, "Argument 1 token number");
-    //    AssertTrue(tree.src[0][2] == 2, "Argument 2 token number");
-    //}
+    {
+        call_tree_t tree;
+        std::vector<token_t> tokens = {
+            token_t {NUMBER_TOKEN, "1", 1, 1},
+            token_t {ATOM_TOKEN, "bar", 1, 3},
+            token_t {NUMBER_TOKEN, "2", 1, 7},
+        };
+		parse(tokens, tree, context);
+		AssertEqual(tree.src, (tree_src_t{
+			{},{0, 2},{},
+			{ 1 }
+		}), "Tree src");
+    }
 	{
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
@@ -76,7 +76,8 @@ inline void test_parses_nested_function_calls_of_one_type() {
 	add(context, "foo", function_t{ PREFIX_FUNCTION, 3 }, FUNCTION_ID_UNKNOWN);
 	add(context, "bar", function_t{ INFIX_FUNCTION, 2 }, 2);
 	add(context, "baz", function_t{ PREFIX_FUNCTION, 2 }, 3);
-	add(context, "quxx", function_t{ POSTFIX_FUNCTION, 1 }, 4);
+	add(context, "+", function_t{ INFIX_FUNCTION, 2 }, 4);
+	add(context, "quxx", function_t{ POSTFIX_FUNCTION, 1 }, 5);
 
 	{
 		call_tree_t tree;
@@ -103,19 +104,22 @@ inline void test_parses_nested_function_calls_of_one_type() {
 				{0}
 		}), "Tree src");
 	}
-	//{
-	//    call_tree_t tree;
-	//    std::vector<token_t> tokens = {
-	//        token_t {NUMBER_TOKEN, "1", 1, 1},
-	//        token_t {ATOM_TOKEN, "bar", 1, 3},
-	//        token_t {NUMBER_TOKEN, "2", 1, 7},
-	//    };
-	//    parse(tokens, tree, context);
-	//    AssertTrue(tree.src.size() == 1, "Tree src size");        
-	//    AssertTrue(tree.src[0][0] == 1, "Function token number");
-	//    AssertTrue(tree.src[0][1] == 0, "Argument 1 token number");
-	//    AssertTrue(tree.src[0][2] == 2, "Argument 2 token number");
-	//}
+	{
+	    call_tree_t tree;
+	    std::vector<token_t> tokens = {
+	        token_t {NUMBER_TOKEN, "1", 1, 1},
+	        token_t {ATOM_TOKEN, "bar", 1, 3},
+	        token_t {NUMBER_TOKEN, "2", 1, 7},
+			token_t{ ATOM_TOKEN, "+", 1, 7 },
+			token_t{ NUMBER_TOKEN, "3", 1, 7 },
+	    };
+	    parse(tokens, tree, context);
+		AssertEqual(tree.src, (tree_src_t{
+			{},{ 0, 3 },
+			{},{2, 4},{},
+			{ 1 }
+		}), "Tree src");
+	}
 	{
 		call_tree_t tree;
 		std::vector<token_t> tokens = {

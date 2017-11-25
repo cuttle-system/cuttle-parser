@@ -25,18 +25,8 @@ inline int parse_function_call(
 	const function_t& func = context.funcs[func_id];
 	int func_i = i;
 	tree.src[i].resize(func.args_number);
-	if (func.type == PREFIX_FUNCTION) {
-		int j = i + 1;
-		for (int argn = 0; argn < func.args_number; ++argn, ++j) {
-			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' recieves " + std::to_string(func.args_number) + " arguments");
-			tree.src[i][argn] = -1;
-			int saved_j = j;
-			parse_function_call(tokens, tree, context, j, argn, i, prev);
-			tree.src[i][argn] = saved_j;
-		}
-		i = j - 1;
-	}
-	else if (func.type == POSTFIX_FUNCTION) {
+
+	if (func.type == POSTFIX_FUNCTION || func.type == INFIX_FUNCTION) {
 		if (prev == -1) {
 			throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
 		}
@@ -58,7 +48,7 @@ inline int parse_function_call(
 				throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
 			}
 			argi_prev = argi;
-			
+
 			int j = 0;
 			while (j < tree.src[argi].size() && tree.src[argi][j] != -1) ++j;
 			if (j < 1) {
@@ -75,11 +65,25 @@ inline int parse_function_call(
 			}
 			tree.src[argi_prev][j - 1] = i;
 		}
-		before -= 1;
+		--before;
 	}
-	else if (func.type == INFIX_FUNCTION) {
-		// TODO
-		throw std::logic_error("no implemented");
+
+	if (func.type == PREFIX_FUNCTION || func.type == INFIX_FUNCTION) {
+		int j = i + 1;
+		int argn = 0;
+		if (func.type == INFIX_FUNCTION) {
+			argn = 1;
+		}
+		for (; argn < func.args_number; ++argn, ++j) {
+			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' recieves " + std::to_string(func.args_number) + " arguments");
+			tree.src[i][argn] = -1;
+			int saved_j = j;
+			parse_function_call(tokens, tree, context, j, argn, i, prev);
+			if (tree.src[i][argn] == -1) {
+				tree.src[i][argn] = saved_j;
+			}
+		}
+		i = j - 1;
 	}
 
 	return true;
@@ -96,10 +100,12 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 	for (; i < tokens.size(); ++i, ++argn) {
 		int saved_i = i;
 		parse_function_call(tokens, tree, context, i, argn, tree.src.size() - 1);
+
 		if (args.size() <= argn) {
 			args.push_back(saved_i);
 		}
 		else {
+			if (args[argn] != -1) continue;
 			args[argn] = saved_i;
 		}
 	}
