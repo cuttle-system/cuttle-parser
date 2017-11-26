@@ -20,7 +20,7 @@ void cuttle::initialize(cuttle::funcs_t &funcs) {
 	funcs.resize(2);
 
 	funcs[FUNCTION_ID_UNKNOWN] = function_unknown;
-	funcs[FUNCTION_ID_LAST] = function_unknown;
+	funcs[FUNCTION_ID_LAST] = function_last;
 }
 
 void cuttle::add(cuttle::context_t &context, std::string name, cuttle::function_t func, cuttle::function_id_t after) {
