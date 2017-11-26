@@ -9,8 +9,8 @@ namespace cuttle {
         POSTFIX_FUNCTION
     };
 
-    typedef struct function {
+    using function_t = struct function {
         enum function_type type;
         int args_number = 0;
-    } function_t;
+    };
 }

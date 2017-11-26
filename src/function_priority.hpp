@@ -12,17 +12,17 @@
 namespace cuttle {
 	using function_priority_t = int;
 
-	typedef struct function_priority_elem {
+	using function_priority_elem_t = struct function_priority_elem {
 		function_id_t prev;
 		function_priority_t prior;
 		function_id_t next;
-	} function_priority_elem_t;
+	};
 
 	using function_priorities_t = std::vector<function_priority_elem_t>;
 	
-	typedef struct function_priority_table {
+	using function_priority_table_t = struct function_priority_table {
 		function_priorities_t priors;
-	} function_priority_table_t;
+	};
 
 	void initialize(function_priority_table_t &func_priors);
 
