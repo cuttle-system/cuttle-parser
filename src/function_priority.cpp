@@ -9,7 +9,7 @@ void cuttle::initialize(cuttle::function_priority_table_t &func_priors) {
 
 bool cuttle::operator==(const function_priority_elem_t &left, const function_priority_elem_t &right)
 {
-	return (left.prev == right.prev && right.prior == right.prior && left.next == right.next);
+	return (left.prev == right.prev && left.prior == right.prior && left.next == right.next);
 }
 
 bool cuttle::operator==(const function_priority_table_t &left, const function_priority_table_t &right)
