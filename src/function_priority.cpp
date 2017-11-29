@@ -30,8 +30,13 @@ cuttle::function_priority_t cuttle::add(
 		func_priors.priors.resize(func + 1);
 	}
 
+	if (after == FUNCTION_ID_UNKNOWN) {
+		prior = FUNCTION_PRIORITY_START;
+	} else {
+		prior = func_priors.priors[after].prior + 1;
+	}
+
 	next = func_priors.priors[after].next;
-	prior = func_priors.priors[after].prior + 1;
 
 	func_priors.priors[func].prior = prior;
 	func_priors.priors[func].prev = after;
@@ -40,7 +45,7 @@ cuttle::function_priority_t cuttle::add(
 	func_priors.priors[after].next = func;
 	func_priors.priors[next].prev = func;
 
-	for (; next != FUNCTION_ID_ERROR; next = func_priors.priors[next].next) {
+	for (; next != FUNCTION_ID_LAST; next = func_priors.priors[next].next) {
 		++func_priors.priors[next].prior;
 	}
 

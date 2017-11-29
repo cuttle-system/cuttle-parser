@@ -37,7 +37,7 @@ inline void test_priority_push_basic() {
 		AssertEqual(func_priors.priors, (function_priorities_t {
 			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 2 },
 			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
-			{ FUNCTION_ID_UNKNOWN, 1, FUNCTION_ID_LAST}
+			{ FUNCTION_ID_UNKNOWN, 2, FUNCTION_ID_LAST}
 		}), "Function priorities");
     }
 	{
@@ -48,8 +48,8 @@ inline void test_priority_push_basic() {
 		AssertEqual(func_priors.priors, (function_priorities_t{
 			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 3 },
 			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
-			{ 3, 2, FUNCTION_ID_LAST },
-			{ FUNCTION_ID_UNKNOWN, 3, 2 }
+			{ 3, 3, FUNCTION_ID_LAST },
+			{ FUNCTION_ID_UNKNOWN, 2, 2 }
 		}), "Function priorities");
 	}
 	{
@@ -61,9 +61,9 @@ inline void test_priority_push_basic() {
 		AssertEqual(func_priors.priors, (function_priorities_t{
 			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 4 },
 			{ 2, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
-			{ 3, 2, FUNCTION_ID_LAST },
+			{ 3, 4, FUNCTION_ID_LAST },
 			{ 4, 3, 2 },
-			{ FUNCTION_ID_UNKNOWN, 4, 3 }
+			{ FUNCTION_ID_UNKNOWN, 2, 3 }
 		}), "Function priorities");
 	}
 }
@@ -80,9 +80,10 @@ inline void test_priority_push_at_any_position() {
 			{ FUNCTION_ID_ERROR, FUNCTION_PRIORITY_UNKNOWN, 2 },
 			{ 4, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR },
 			{ FUNCTION_ID_UNKNOWN, 2, 5 },
-			{ 5, 3, 4 },
-			{ 3, 4, FUNCTION_ID_LAST },
-			{ 2, 5, 3 }
+			{ 5, 4
+			, 4 },
+			{ 3, 5, FUNCTION_ID_LAST },
+			{ 2, 3, 3 }
 		}), "Function priorities");
 	}
 	{
