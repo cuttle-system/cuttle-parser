@@ -1,7 +1,8 @@
-#include "function_priority.hpp"
-#include "context.hpp"
+#include "function_priority_methods.hpp"
+#include "context_methods.hpp"
 
 void cuttle::initialize(cuttle::function_priority_table_t &func_priors) {
+	using namespace cuttle;
 	func_priors.priors.resize(2);
 	func_priors.priors[FUNCTION_ID_UNKNOWN] = function_priority_elem_t{ FUNCTION_PRIORITY_ERROR, FUNCTION_PRIORITY_UNKNOWN, FUNCTION_ID_LAST };
 	func_priors.priors[FUNCTION_ID_LAST] = function_priority_elem_t{ FUNCTION_PRIORITY_UNKNOWN, FUNCTION_PRIORITY_LAST, FUNCTION_PRIORITY_ERROR };

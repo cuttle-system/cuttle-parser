@@ -12,7 +12,7 @@ inline int parse_function_call(
 ) {
 	using namespace cuttle;
 
-	if (tokens[i].type != ATOM_TOKEN) {
+	if (tokens[i].type != token_type::atom) {
 		return false;
 	}
 
@@ -26,7 +26,7 @@ inline int parse_function_call(
 	int func_i = i;
 	tree.src[i].resize(func.args_number);
 
-	if (func.type == POSTFIX_FUNCTION || func.type == INFIX_FUNCTION) {
+	if (func.type == function_type::postfix || func.type == function_type::infix) {
 		if (prev == -1) {
 			throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
 		}
@@ -44,7 +44,7 @@ inline int parse_function_call(
 			if (context.funcs_prior.priors[check_func_id].prior >= context.funcs_prior.priors[func_id].prior) {
 				break;
 			}
-			if (context.funcs[check_func_id].type == POSTFIX_FUNCTION) {
+			if (context.funcs[check_func_id].type == function_type::postfix) {
 				throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
 			}
 			argi_prev = argi;
@@ -68,10 +68,10 @@ inline int parse_function_call(
 		--before;
 	}
 
-	if (func.type == PREFIX_FUNCTION || func.type == INFIX_FUNCTION) {
+	if (func.type == function_type::prefix || func.type == function_type::infix) {
 		int j = i + 1;
 		int argn = 0;
-		if (func.type == INFIX_FUNCTION) {
+		if (func.type == function_type::infix) {
 			argn = 1;
 		}
 		for (; argn < func.args_number; ++argn, ++j) {

@@ -1,4 +1,4 @@
-#include "token.hpp"
+#include "token_methods.hpp"
 
 bool cuttle::operator>=(const token_t& l, const token_t& r)
 {

@@ -1,25 +1,25 @@
 #include <iostream>
 #include "test.hpp"
-#include "token.hpp"
+#include "token_methods.hpp"
 
 using namespace cuttle;
 
 inline void test_constructor() {
-    token_t tok {NUMBER_TOKEN, "1", 2, 10};
+    token_t tok {token_type::number, "1", 2, 10};
 
-    AssertTrue(tok.type == NUMBER_TOKEN, "Type constructor");
+    AssertTrue(tok.type == token_type::number, "Type constructor");
     AssertTrue(tok.value == "1", "Value constructor");
     AssertTrue(tok.line == 2, "Line constructor");
     AssertTrue(tok.col == 10, "Col constructor");
 }
 
 inline void test_right_after() {
-    token_t tok1 {NUMBER_TOKEN, "1", 1, 10};
-    token_t tok2 {NUMBER_TOKEN, "2", 1, 11};
-    token_t tok3 {NUMBER_TOKEN, "3", 2, 1};
-    token_t tok4 {NUMBER_TOKEN, "4", 2, 3};
-    token_t tok5 {NUMBER_TOKEN, "5", 2, 10};
-    token_t tok6 {NUMBER_TOKEN, "6", 3, 11};
+    token_t tok1 {token_type::number, "1", 1, 10};
+    token_t tok2 {token_type::number, "2", 1, 11};
+    token_t tok3 {token_type::number, "3", 2, 1};
+    token_t tok4 {token_type::number, "4", 2, 3};
+    token_t tok5 {token_type::number, "5", 2, 10};
+    token_t tok6 {token_type::number, "6", 3, 11};
 
     AssertTrue(tok1 >= tok2, "Token 1 RightAfter Token 2");
     AssertTrue(!(tok2 >= tok1), "Token 2 RightAfter Token 1");

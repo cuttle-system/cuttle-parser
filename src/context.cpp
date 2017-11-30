@@ -1,7 +1,7 @@
 #include <string>
-#include "context.hpp"
+#include "context_methods.hpp"
 #include "function.hpp"
-#include "function_priority.hpp"
+#include "function_priority_methods.hpp"
 
 void cuttle::initialize(cuttle::context_t &context) {
 	using namespace cuttle;
@@ -14,8 +14,8 @@ void cuttle::initialize(cuttle::funcs_t &funcs) {
 	using namespace cuttle;
 
 	function_t
-		function_unknown = { PREFIX_FUNCTION, 0 },
-		function_last = { PREFIX_FUNCTION, 0 };
+		function_unknown = { function_type::prefix, 0 },
+		function_last = { function_type::prefix, 0 };
 
 	funcs.resize(2);
 

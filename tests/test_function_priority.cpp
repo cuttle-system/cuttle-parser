@@ -5,7 +5,7 @@
 
 #include "test.hpp"
 #include "test_function_priority.hpp"
-#include "function_priority.hpp"
+#include "function_priority_methods.hpp"
 
 using namespace cuttle;
 
