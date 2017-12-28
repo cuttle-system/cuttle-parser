@@ -1,5 +1,7 @@
 #include <vector>
 #include <string>
+#include <list>
+#include <algorithm>
 #include "parse_error.hpp"
 #include "parser.hpp"
 #include "call_tree.hpp"
@@ -8,7 +10,7 @@
 
 inline int parse_function_call(
 	const cuttle::tokens_t& tokens, cuttle::call_tree_t& tree, cuttle::context_t& context,
-	int &i, int& before, int prev = -1, int prev_prev = -1
+	int &i, int& before, std::list<int> st
 ) {
 	using namespace cuttle;
 
@@ -27,12 +29,11 @@ inline int parse_function_call(
 	tree.src[i].resize(func.args_number);
 
 	if (func.type == function_type::postfix || func.type == function_type::infix) {
-		if (prev == -1) {
-			throw parse_error("'" + tokens[i].value + "' is a postfix function and recieves " + std::to_string(func.args_number) + " arguments");
+		if (st.empty()) {
+			throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and recieves " + std::to_string(func.args_number) + " arguments");
 		}
-		// TODO if previous is a prefix function and is not fully parsed yet
-		int argi = prev;
-		int argi_prev = prev_prev;
+		int argi = st.front();
+		int argi_prev = *(++st.cbegin());
 		while (tree.src[argi].size() != 0) {
 			function_id_t check_func_id;
 			if (argi == tokens.size()) {
@@ -78,7 +79,8 @@ inline int parse_function_call(
 			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' recieves " + std::to_string(func.args_number) + " arguments");
 			tree.src[i][argn] = -1;
 			int saved_j = j;
-			parse_function_call(tokens, tree, context, j, argn, i, prev);
+			st.push_front(i);
+			parse_function_call(tokens, tree, context, j, argn, st);
 			if (tree.src[i][argn] == -1) {
 				tree.src[i][argn] = saved_j;
 			}
@@ -99,7 +101,7 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 	int argn = 0;
 	for (; i < tokens.size(); ++i, ++argn) {
 		int saved_i = i;
-		parse_function_call(tokens, tree, context, i, argn, tree.src.size() - 1);
+		parse_function_call(tokens, tree, context, i, argn, { (int) tree.src.size() - 1, -1 });
 
 		if (args.size() <= argn) {
 			args.push_back(saved_i);

@@ -200,10 +200,62 @@ inline void test_parses_nested_function_calls_where_first_function_call_is_not_i
 	}
 }
 
+inline void test_parses_nested_function_calls_with_priorities_and_multiple_parents() {
+	context_t context;
+
+	initialize(context);
+
+	add(context, "!", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
+	add(context, "-", function_t{ function_type::infix, 2 }, 2);
+	add(context, "+", function_t{ function_type::infix, 2 }, 3);
+	add(context, "*", function_t{ function_type::infix, 2 }, 4);
+
+	{
+		call_tree_t tree;
+		std::vector<token_t> tokens = {
+			token_t{ token_type::number, "1", 0, 0 },
+			token_t{ token_type::atom, "-", 0, 0 },
+			token_t{ token_type::number, "2", 0, 0 },
+			token_t{ token_type::atom, "+", 0, 0 },
+			token_t{ token_type::number, "3", 0, 0 },
+			token_t{ token_type::atom, "!", 0, 0},
+		};
+		parse(tokens, tree, context);
+		AssertEqual(tree.src, (tree_src_t{
+			{},{0, 3},
+			{},{2, 4},{},
+			{1},
+			{5}
+		}), "Tree src");
+	}
+	{
+		call_tree_t tree;
+		std::vector<token_t> tokens = {
+			token_t{ token_type::number, "1", 0, 0 },
+			token_t{ token_type::atom, "-", 0, 0 },
+			token_t{ token_type::number, "2", 0, 0 },
+			token_t{ token_type::atom, "+", 0, 0 },
+			token_t{ token_type::number, "3", 0, 0 },
+			token_t{ token_type::atom, "*", 0, 0 },
+			token_t{ token_type::number, "4", 0, 0 },
+			token_t{ token_type::atom, "!", 0, 0 },
+		};
+		parse(tokens, tree, context);
+		AssertEqual(tree.src, (tree_src_t{
+			{},{ 0, 3 },
+			{},{ 2, 5 },
+			{},{ 4, 6 },{},
+			{ 1 },
+			{ 7 }
+		}), "Tree src");
+	}
+}
+
 void run_parser_tests() {
     TESTCASE
     test_parses_basic_function_call();
 	test_parses_nested_function_calls_of_one_type();
 	test_parses_nested_function_calls_with_different_priorities();
 	test_parses_nested_function_calls_where_first_function_call_is_not_in_the_start();
+	test_parses_nested_function_calls_with_priorities_and_multiple_parents();
 }
