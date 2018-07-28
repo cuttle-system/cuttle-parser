@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <ctype.h>
 #include "token.hpp"
 #include "tokenizer.hpp"
 #include "parse_error.hpp"
@@ -10,12 +9,12 @@ using namespace cuttle;
 
 #define found_range_start(name) { \
 	range_found = true; \
-	range_type = tokenizer_range_type::##name; \
+	range_type = tokenizer_range_type::name; \
 }
 
 #define register_range_type(name, func) \
 	if (!range_found) { \
-		tokenizer_range_map_t container = config.##name; \
+		tokenizer_range_map_t container = config.name; \
 		if (find_symbol(container, range_end, symbol)) { \
 			func(); \
 			found_range_start(name); \
@@ -24,7 +23,7 @@ using namespace cuttle;
 
 #define register_set_type(name, func) \
 	if (!range_found) { \
-		tokenizer_symbol_set_t container = config.##name; \
+		tokenizer_symbol_set_t container = config.name; \
 		if (find_symbol(container, symbol)) { \
 			func(); \
 		} \
@@ -37,14 +36,15 @@ public:
 	bool advance = false;
 	tokenizer_range_type range_type = tokenizer_range_type();
 	tokenizer_symbol_set_t range_end;
-	unsigned short i_start = 0, line_start, i_line_start = 0;
+	unsigned short i_start = 0, line_start;
+	unsigned int i_line_start = 0;
 	std::string acc = "";
 	std::string str;
 	tokenizer_config_t config;
 	unsigned int i;
 	unsigned short line;
 	
-	const int symbol_check_length = 3;
+	const unsigned int symbol_check_length = 3;
 
 	std::string symbol;
 
@@ -53,7 +53,7 @@ public:
 		tokens_t& tokens,
 		unsigned short line_
 	) {
-		str = query + '\n';
+		str = query + "\n";
 		line_start = line_;
 		this->config = config;
 		this->line = line_;
@@ -117,10 +117,10 @@ public:
 				|| (type == token_type::number && !isdigit(str[i]))
 				|| (type == token_type::atom && isdigit(str[i]) && config.separate_digit_and_alpha)
 			) {
-				if (acc != "" && !(str[i] == ' ' || str[i] == '\n' || str[i] == '\t')) --i;
+				if (!acc.empty() && !(str[i] == ' ' || str[i] == '\n' || str[i] == '\t')) --i;
 				reset_acc(tokens);
 			} else {
-				if (acc == "") {
+				if (acc.empty()) {
 					type = isdigit(str[i]) ? token_type::number : token_type::atom;
 				}
 				acc += str[i];
@@ -130,13 +130,13 @@ public:
 
 	void reset_acc(tokens_t& tokens) {
 		range_found = false;
-		if (acc != "") {
+		if (!acc.empty()) {
 			tokens.push_back(token_t{
-				(token_type)type, acc, line_start, ++i_start
+				type, acc, line_start, ++i_start
 			});
 			acc = "";
 		}
-		i_start = i - i_line_start + 1;
+		i_start = (unsigned short) (i - i_line_start + 1);
 		line_start = line;
 		type = token_type::unknown;
 	}
@@ -145,9 +145,9 @@ public:
 	 * NOTE: current symbols can only be <= 3
 	 */
 	bool find_symbol(tokenizer_range_map_t container, tokenizer_symbol_set_t& range, std::string& symbol) {
-		std::string val = "";
-		auto it = container.end();
-		for (int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
+		std::string val;
+		decltype(container)::iterator it;
+		for (unsigned int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
 			val += str[j];
 			it = container.find(val);
 			if (it != container.end()) {
@@ -164,9 +164,9 @@ public:
 	* NOTE: current symbols can only be <= 3
 	*/
 	bool find_symbol(tokenizer_symbol_set_t container, std::string& symbol) {
-		std::string val = "";
-		auto it = container.end();
-		for (int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
+		std::string val;
+		decltype(container)::iterator it;
+		for (unsigned int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
 			val += str[j];
 			it = container.find(val);
 			if (it != container.end()) {

@@ -10,7 +10,7 @@ namespace cuttle {
     };
 
     using function_t = struct function {
-        function_type type;
-        int args_number = 0;
+        function_type type = function_type::prefix;
+        unsigned int args_number = 0;
     };
 }
