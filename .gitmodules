@@ -1,0 +1,3 @@
+[submodule "tests\\cuttle-test"]
+	path = tests\\cuttle-test
+	url = git@github.com:cuttle-system/cuttle-test.git

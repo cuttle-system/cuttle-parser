@@ -5,10 +5,10 @@ project(CuttleParser VERSION 0.1 LANGUAGES CXX)
 include(CMakeToolsHelpers OPTIONAL)
 
 file(GLOB SRCS "src/*.cpp")
-file(GLOB TEST_SRCS "tests/*.cpp")
+file(GLOB_RECURSE TEST_SRCS "tests/*.cpp")
 
 file(GLOB HEADERS "src/*.hpp")
-file(GLOB TEST_HEADERS "tests/*.hpp")
+file(GLOB_RECURSE TEST_HEADERS "tests/*.hpp")
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -30,9 +30,9 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 add_library(cuttle_parser SHARED ${SRCS} ${HEADERS})
-add_executable(cuttle_parser_tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS})
+add_executable(cuttle_parser_tests ${TEST_SRCS} ${HEADERS} ${TEST_HEADERS} tests/cuttle-test/src/measure.hpp)
 
 target_include_directories(cuttle_parser PRIVATE "src/")
-target_include_directories(cuttle_parser_tests PRIVATE "src/" "tests/")
+target_include_directories(cuttle_parser_tests PRIVATE "src/" "tests/" "tests/cuttle-test/src/")
 
 target_link_libraries(cuttle_parser_tests cuttle_parser)
