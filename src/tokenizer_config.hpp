@@ -14,7 +14,7 @@ namespace cuttle {
 		comments
 	};
 
-	using tokenizer_config_t = struct {
+	struct tokenizer_config_t {
 		tokenizer_range_map_t formatted_string;
 		tokenizer_range_map_t normal_string;
 		tokenizer_symbol_set_t separated_symbols;

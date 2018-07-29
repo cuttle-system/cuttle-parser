@@ -5,7 +5,6 @@
 
 #include "test.hpp"
 #include "parser.hpp"
-#include "call_tree.hpp"
 #include "context_methods.hpp"
 
 using namespace cuttle;
@@ -16,9 +15,9 @@ inline void test_parses_basic_function_call() {
 	initialize(context);
 
 	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 2);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 3);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 4);
+	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+	add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
 
     {
         call_tree_t tree;
@@ -74,10 +73,10 @@ inline void test_parses_nested_function_calls_of_one_type() {
 	initialize(context);
 
 	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 2);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 3);
-	add(context, "+", function_t{ function_type::infix, 2 }, 4);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
+	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+	add(context, "+", function_t{ function_type::infix, 2 }, 5);
+	add(context, "quxx", function_t{ function_type::postfix, 1 }, 6);
 
 	{
 		call_tree_t tree;
@@ -142,9 +141,9 @@ inline void test_parses_nested_function_calls_with_different_priorities() {
 	initialize(context);
 
 	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 2);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 3);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 4);
+	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+	add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
 
 	{
 		call_tree_t tree;
@@ -173,9 +172,9 @@ inline void test_parses_nested_function_calls_where_first_function_call_is_not_i
 	initialize(context);
 
 	add(context, "quxx", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 2);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 3);
-	add(context, "foo", function_t{ function_type::prefix, 3 }, 4);
+	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+	add(context, "foo", function_t{ function_type::prefix, 3 }, 5);
 
 	{
 		call_tree_t tree;
@@ -206,9 +205,9 @@ inline void test_parses_nested_function_calls_with_priorities_and_multiple_paren
 	initialize(context);
 
 	add(context, "!", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
-	add(context, "-", function_t{ function_type::infix, 2 }, 2);
-	add(context, "+", function_t{ function_type::infix, 2 }, 3);
-	add(context, "*", function_t{ function_type::infix, 2 }, 4);
+	add(context, "-", function_t{ function_type::infix, 2 }, 3);
+	add(context, "+", function_t{ function_type::infix, 2 }, 4);
+	add(context, "*", function_t{ function_type::infix, 2 }, 5);
 
 	{
 		call_tree_t tree;
