@@ -4,7 +4,7 @@
 
 namespace cuttle {
 	using tree_src_t = std::vector<std::vector<int> >;
-	using call_tree_t = struct call_tree {
+	struct call_tree_t {
         tree_src_t src;
     };
 }
