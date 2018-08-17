@@ -15,7 +15,7 @@ using namespace cuttle;
 #define register_range_type(name, func) \
 	if (!range_found) { \
 		tokenizer_range_map_t container = config.name; \
-		if (find_symbol(container, range_end, symbol)) { \
+		if (find_symbol(container, symbol, range_end)) {    \
 			func(); \
 			found_range_start(name); \
 		} \
@@ -144,39 +144,56 @@ public:
 	/*
 	 * NOTE: current symbols can only be <= 3
 	 */
-	bool find_symbol(tokenizer_range_map_t container, tokenizer_symbol_set_t& range, std::string& symbol) {
+	bool find_symbol(tokenizer_range_map_t container, std::string& symbol, tokenizer_symbol_set_t& range) {
+        tokenizer_range_map_t::iterator it;
 		std::string val;
-		decltype(container)::iterator it;
-		for (unsigned int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
-			val += str[j];
+        unsigned int j = i;
+        construct_symbol_val(val, j);
+		for (; j >= i; --j) {
 			it = container.find(val);
 			if (it != container.end()) {
-				range = it->second;
-				symbol = val;
-				i = j;
+                symbol = val;
+                range = it->second;
+                i = j;
 				return true;
 			}
+            if (j == 0) break;
+            val.pop_back();
 		}
 		return false;
 	}
 
 	/*
-	* NOTE: current symbols can only be <= 3
-	*/
+	 * NOTE: current symbols can only be <= 3
+	 */
 	bool find_symbol(tokenizer_symbol_set_t container, std::string& symbol) {
+        tokenizer_symbol_set_t::iterator it;
 		std::string val;
-		decltype(container)::iterator it;
-		for (unsigned int j = i; j - i < symbol_check_length && j < str.length(); ++j) {
-			val += str[j];
+        unsigned int j = i;
+        construct_symbol_val(val, j);
+		for (; j >= i; --j) {
 			it = container.find(val);
 			if (it != container.end()) {
-				symbol = *it;
-				i = j;
+                symbol = val;
+                i = j;
 				return true;
 			}
+            if (j == 0) break;
+            val.pop_back();
 		}
 		return false;
 	}
+
+    void construct_symbol_val(std::string &val, unsigned int &j) {
+		while (j - i < symbol_check_length && j < str.length()) {
+			val += str[j];
+            ++j;
+        }
+        if (j == 0) {
+            (void) j;
+        }
+        --j;
+    }
 };
 
 void cuttle::tokenize(

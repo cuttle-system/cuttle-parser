@@ -109,7 +109,7 @@ inline void test_tokenize_space_and_new_line_separated_numbers() {
     AssertTrue(tokens[3].type == token_type::number, "element 4 type");
     AssertTrue(tokens[3].value == "320", "element 4 value");
     AssertTrue(tokens[3].line == 4, "element 4 line");
-    AssertTrue(tokens[3].col == 1, "element 4 col");       
+    AssertTrue(tokens[3].col == 1, "element 4 col");
 }
 
 inline void test_tokenize_space_separated_mixed_numbers_and_atoms() {
@@ -136,7 +136,7 @@ inline void test_tokenize_space_separated_mixed_numbers_and_atoms() {
     AssertTrue(tokens[3].type == token_type::atom, "element 4 type");
     AssertTrue(tokens[3].value == "bar", "element 4 value");
     AssertTrue(tokens[3].line == 1, "element 4 line");
-    AssertTrue(tokens[3].col == 12, "element 4 col");      
+    AssertTrue(tokens[3].col == 12, "element 4 col");
 }
 
 inline void test_tokenize_not_separated_by_space_numbers_and_atoms() {
@@ -540,6 +540,35 @@ inline void test_tokenize_separated_symbols_with_spaces() {
 	AssertTrue(tokens[10].col == 11, "element 11 col");
 }
 
+inline void test_tokenize_separated_symbols_which_consist_of_other_separated_symbols() {
+    {
+        tokenizer_config_t config = { {},{},{{"+", "++","="}},{},false };
+        tokens_t tokens;
+
+        tokenize(config, "foo bar++6", tokens);
+
+        AssertTrue(tokens[0].type == token_type::atom, "element 1 type");
+        AssertTrue(tokens[0].value == "foo", "element 1 value");
+        AssertTrue(tokens[0].line == 1, "element 1 line");
+        AssertTrue(tokens[0].col == 1, "element 1 col");
+
+        AssertTrue(tokens[1].type == token_type::atom, "element 2 type");
+        AssertTrue(tokens[1].value == "bar", "element 2 value");
+        AssertTrue(tokens[1].line == 1, "element 2 line");
+        AssertTrue(tokens[1].col == 5, "element 2 col");
+
+        AssertTrue(tokens[2].type == token_type::atom, "element 3 type");
+        AssertTrue(tokens[2].value == "++", "element 3 value");
+        AssertTrue(tokens[2].line == 1, "element 3 line");
+        AssertTrue(tokens[2].col == 8, "element 3 col");
+
+        AssertTrue(tokens[3].type == token_type::number, "element 4 type");
+        AssertTrue(tokens[3].value == "6", "element 4 value");
+        AssertTrue(tokens[3].line == 1, "element 4 line");
+        AssertTrue(tokens[3].col == 10, "element 4 col");
+    }
+}
+
 void run_tokenizer_tests() {
     TESTCASE
     test_tokenize_basic_space_separated_atoms();
@@ -559,4 +588,5 @@ void run_tokenizer_tests() {
 	test_tokenize_formatted_string_with_endlines();
 	test_tokenize_separated_symbols();
 	test_tokenize_separated_symbols_with_spaces();
+    test_tokenize_separated_symbols_which_consist_of_other_separated_symbols();
 }

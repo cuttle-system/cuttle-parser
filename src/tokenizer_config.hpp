@@ -19,7 +19,7 @@ namespace cuttle {
 		tokenizer_range_map_t normal_string;
 		tokenizer_symbol_set_t separated_symbols;
 		tokenizer_range_map_t comments;
-		
+
 		bool separate_digit_and_alpha;
 	};
 }
