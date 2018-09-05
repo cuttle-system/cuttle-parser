@@ -3,7 +3,7 @@
 #include <string>
 
 namespace cuttle {
-    enum class function_type {
+    enum function_type {
         prefix,
         infix,
         postfix

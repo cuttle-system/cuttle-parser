@@ -1,19 +1,20 @@
-#include <string>
-#include <iostream>
+#define BOOST_TEST_DYN_LINK
 
-#include "test.hpp"
+#include <iostream>
+#include <boost/test/unit_test.hpp>
+#include <string>
+
 #include "function.hpp"
 
 using namespace cuttle;
 
-inline void test_contstructor() {
-    function_t func {function_type::infix, 2};
+BOOST_AUTO_TEST_SUITE(generates_basic_code_suite)
 
-    AssertTrue(func.type == function_type::infix, "Type constructor");
-    AssertTrue(func.args_number == 2, "Args number constructor");
-}
+    BOOST_AUTO_TEST_CASE(case1) {
+        function_t func {function_type::infix, 2};
 
-void run_function_tests() {
-    TESTCASE
-    test_contstructor();
-}
+        BOOST_CHECK_EQUAL(func.type, function_type::infix);
+        BOOST_CHECK_EQUAL(func.args_number, 2);
+    }
+
+BOOST_AUTO_TEST_SUITE_END()

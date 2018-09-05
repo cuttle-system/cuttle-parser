@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace cuttle {
-	enum class token_type {
+	enum token_type {
 		number,
 		string,
 		atom,

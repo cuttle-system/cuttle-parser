@@ -1,25 +1,34 @@
+#define BOOST_TEST_DYN_LINK
+
+#include <iostream>
+#include <boost/test/unit_test.hpp>
 #include <string>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
 
-#include "test.hpp"
 #include "parser.hpp"
 #include "context_methods.hpp"
 
 using namespace cuttle;
 
-inline void test_parses_basic_function_call() {
+
+struct parses_basic_function_call_suite_fixture {
     context_t context;
 
-	initialize(context);
+    void setup() {
+        initialize(context);
 
-	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
+        add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
+        add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+        add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+        add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
+    }
+};
 
-    {
+BOOST_FIXTURE_TEST_SUITE(parses_basic_function_call_suite, parses_basic_function_call_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
         call_tree_t tree;
         std::vector<token_t> tokens = {
             token_t {token_type::atom, "foo", 1, 1},
@@ -28,9 +37,10 @@ inline void test_parses_basic_function_call() {
             token_t {token_type::number, "3", 1, 9}
         };
         parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{ { 1, 2, 3 }, {}, {}, {}, {0} }), "Tree src");
+		BOOST_CHECK(tree.src == (tree_src_t{ { 1, 2, 3 }, {}, {}, {}, {0} }));
     }
-    {
+
+    BOOST_AUTO_TEST_CASE(case2) {
         call_tree_t tree;
         std::vector<token_t> tokens = {
             token_t {token_type::number, "1", 1, 1},
@@ -38,47 +48,55 @@ inline void test_parses_basic_function_call() {
             token_t {token_type::number, "2", 1, 7},
         };
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{},{0, 2},{},
 			{ 1 }
-		}), "Tree src");
+		}));
     }
-	{
-		call_tree_t tree;
+
+    BOOST_AUTO_TEST_CASE(case3) {
+        call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t {token_type::atom, "baz", 1, 1},
 			token_t {token_type::number, "1", 1, 5},
 			token_t {token_type::number, "2", 1, 7},
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{ {1, 2}, {}, {}, {0} }), "Tree src");
+        BOOST_CHECK(tree.src == (tree_src_t{ {1, 2}, {}, {}, {0} }));
     }
-	{
-		call_tree_t tree;
+
+    BOOST_AUTO_TEST_CASE(case4) {
+        call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::number, "1", 1, 1 },
 			token_t{ token_type::atom, "quxx", 1, 3 },
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+        BOOST_CHECK(tree.src == (tree_src_t{
 			{},{ 0 },
 			{1}
-		}), "Tree src");
+		}));
 	}
-}
 
-inline void test_parses_nested_function_calls_of_one_type() {
-	context_t context;
-	
-	initialize(context);
+BOOST_AUTO_TEST_SUITE_END()
 
-	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
-	add(context, "+", function_t{ function_type::infix, 2 }, 5);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 6);
+struct parses_nested_function_calls_of_one_type_suite_fixture {
+    context_t context;
 
-	{
+    void setup() {
+        initialize(context);
+
+        add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
+        add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+        add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+        add(context, "+", function_t{ function_type::infix, 2 }, 5);
+        add(context, "quxx", function_t{ function_type::postfix, 1 }, 6);
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(parses_nested_function_calls_of_one_type_suite, parses_nested_function_calls_of_one_type_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::atom, "foo", 1, 1 },
@@ -95,15 +113,16 @@ inline void test_parses_nested_function_calls_of_one_type() {
 			token_t{ token_type::number, "3", 1, 34 }
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{ 1, 5, 8 },
 				{ 2, 3, 4 }, {}, {}, {},
 				{ 6, 7 }, {}, {},
 				{ 9, 10, 11 }, {}, {}, {},
 				{0}
-		}), "Tree src");
+		}));
 	}
-	{
+
+    BOOST_AUTO_TEST_CASE(case2) {
 	    call_tree_t tree;
 	    std::vector<token_t> tokens = {
 	        token_t {token_type::number, "1", 1, 1},
@@ -113,13 +132,14 @@ inline void test_parses_nested_function_calls_of_one_type() {
 			token_t{ token_type::number, "3", 1, 7 },
 	    };
 	    parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{},{ 0, 3 },
 			{},{2, 4},{},
 			{ 1 }
-		}), "Tree src");
+		}));
 	}
-	{
+
+    BOOST_AUTO_TEST_CASE(case3) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::number, "1", 1, 1 },
@@ -127,25 +147,31 @@ inline void test_parses_nested_function_calls_of_one_type() {
 			token_t{ token_type::atom, "quxx", 1, 7 },
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{},{ 0 },
 			{ 1 },
 			{2}
-		}), "Tree src");
+		}));
 	}
-}
 
-inline void test_parses_nested_function_calls_with_different_priorities() {
-	context_t context;
+BOOST_AUTO_TEST_SUITE_END()
 
-	initialize(context);
+struct parses_nested_function_calls_with_different_priorities_suite_fixture {
+    context_t context;
 
-	add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
+    void setup() {
+        initialize(context);
 
-	{
+        add(context, "foo", function_t{ function_type::prefix, 3 }, FUNCTION_ID_UNKNOWN);
+        add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+        add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+        add(context, "quxx", function_t{ function_type::postfix, 1 }, 5);
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(parses_nested_function_calls_with_different_priorities_suite, parses_nested_function_calls_with_different_priorities_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::atom, "foo", 1, 1 },
@@ -157,26 +183,33 @@ inline void test_parses_nested_function_calls_with_different_priorities() {
 			token_t{ token_type::number, "2", 1, 23 }
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{ 2, 3, 4 },{},
 			{ 1 },{},
 			{ 5, 6 },{},{},
 			{0}
-		}), "Tree src");
+		}));
 	}
-}
 
-inline void test_parses_nested_function_calls_where_first_function_call_is_not_in_the_start() {
-	context_t context;
+BOOST_AUTO_TEST_SUITE_END()
 
-	initialize(context);
+struct parses_nested_function_calls_where_first_function_call_is_not_in_the_start_suite_fixture {
+    context_t context;
 
-	add(context, "quxx", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
-	add(context, "bar", function_t{ function_type::infix, 2 }, 3);
-	add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
-	add(context, "foo", function_t{ function_type::prefix, 3 }, 5);
+    void setup() {
+        initialize(context);
 
-	{
+        add(context, "quxx", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
+        add(context, "bar", function_t{ function_type::infix, 2 }, 3);
+        add(context, "baz", function_t{ function_type::prefix, 2 }, 4);
+        add(context, "foo", function_t{ function_type::prefix, 3 }, 5);
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(parses_nested_function_calls_where_first_function_call_is_not_in_the_start_suite,
+        parses_nested_function_calls_where_first_function_call_is_not_in_the_start_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::atom, "foo", 1, 1 },
@@ -189,27 +222,34 @@ inline void test_parses_nested_function_calls_where_first_function_call_is_not_i
 			token_t{ token_type::atom, "quxx", 1, 12 }
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{ 1, 2, 5 },{},
 			{ 3, 4 },{},{},{},
 			{ 0 },
 			{ 6 },
 			{7}
-		}), "Tree src");
+		}));
 	}
-}
 
-inline void test_parses_nested_function_calls_with_priorities_and_multiple_parents() {
-	context_t context;
+BOOST_AUTO_TEST_SUITE_END()
 
-	initialize(context);
+struct parses_nested_function_calls_with_priorities_and_multiple_parents_suite_fixture {
+    context_t context;
 
-	add(context, "!", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
-	add(context, "-", function_t{ function_type::infix, 2 }, 3);
-	add(context, "+", function_t{ function_type::infix, 2 }, 4);
-	add(context, "*", function_t{ function_type::infix, 2 }, 5);
+    void setup() {
+        initialize(context);
 
-	{
+        add(context, "!", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
+        add(context, "-", function_t{ function_type::infix, 2 }, 3);
+        add(context, "+", function_t{ function_type::infix, 2 }, 4);
+        add(context, "*", function_t{ function_type::infix, 2 }, 5);
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(parses_nested_function_calls_with_priorities_and_multiple_parents_suite,
+                         parses_nested_function_calls_with_priorities_and_multiple_parents_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::number, "1", 0, 0 },
@@ -220,14 +260,15 @@ inline void test_parses_nested_function_calls_with_priorities_and_multiple_paren
 			token_t{ token_type::atom, "!", 0, 0},
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{},{0, 3},
 			{},{2, 4},{},
 			{1},
 			{5}
-		}), "Tree src");
+		}));
 	}
-	{
+
+    BOOST_AUTO_TEST_CASE(case2) {
 		call_tree_t tree;
 		std::vector<token_t> tokens = {
 			token_t{ token_type::number, "1", 0, 0 },
@@ -240,21 +281,13 @@ inline void test_parses_nested_function_calls_with_priorities_and_multiple_paren
 			token_t{ token_type::atom, "!", 0, 0 },
 		};
 		parse(tokens, tree, context);
-		AssertEqual(tree.src, (tree_src_t{
+		BOOST_CHECK(tree.src == (tree_src_t{
 			{},{ 0, 3 },
 			{},{ 2, 5 },
 			{},{ 4, 6 },{},
 			{ 1 },
 			{ 7 }
-		}), "Tree src");
+		}));
 	}
-}
 
-void run_parser_tests() {
-    TESTCASE
-    test_parses_basic_function_call();
-	test_parses_nested_function_calls_of_one_type();
-	test_parses_nested_function_calls_with_different_priorities();
-	test_parses_nested_function_calls_where_first_function_call_is_not_in_the_start();
-	test_parses_nested_function_calls_with_priorities_and_multiple_parents();
-}
+BOOST_AUTO_TEST_SUITE_END()
