@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(generates_basic_code_suite)
         function_t func {function_type::infix, 2};
 
         BOOST_CHECK_EQUAL(func.type, function_type::infix);
-        BOOST_CHECK_EQUAL(func.args_number, 2);
+        BOOST_CHECK_EQUAL(func.args_number, 2u);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

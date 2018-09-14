@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "parser.hpp"
+#include "parse_error.hpp"
 #include "context_methods.hpp"
 
 using namespace cuttle;
@@ -287,6 +288,66 @@ BOOST_FIXTURE_TEST_SUITE(parses_nested_function_calls_with_priorities_and_multip
 			{},{ 4, 6 },{},
 			{ 1 },
 			{ 7 }
+		}));
+	}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+struct parser_throws_errors_suite_fixture {
+    context_t context;
+
+    void setup() {
+        initialize(context);
+
+        add(context, "foo", function_t{ function_type::prefix, 2 }, FUNCTION_ID_UNKNOWN);
+    }
+};
+
+BOOST_FIXTURE_TEST_SUITE(parser_throws_errors_suite,
+                         parser_throws_errors_suite_fixture)
+
+    BOOST_AUTO_TEST_CASE(case1) {
+        call_tree_t tree;
+        std::vector<token_t> tokens = {
+                token_t{ token_type::atom, "foo", 0, 0 },
+                token_t{ token_type::number, "2", 0, 0 },
+        };
+
+        BOOST_CHECK_THROW(do {
+            parse(tokens, tree, context);
+        } while (0), parse_error);
+    }
+
+BOOST_AUTO_TEST_SUITE_END()
+
+struct parses_function_calls_with_any_function_name_suite_fixture {
+	context_t context;
+
+	void setup() {
+		initialize(context);
+
+		add(context, "*", function_t{ function_type::infix, 2 }, FUNCTION_ID_UNKNOWN);
+		add(context, "+", function_t{ function_type::infix, 2 }, 3);
+	}
+};
+
+BOOST_FIXTURE_TEST_SUITE(parses_function_calls_with_any_function_name_suite,
+						 parses_function_calls_with_any_function_name_suite_fixture)
+
+	BOOST_AUTO_TEST_CASE(case1) {
+		call_tree_t tree;
+		std::vector<token_t> tokens = {
+				token_t{ token_type::atom, "foo", 0, 0 },
+				token_t{ token_type::atom, "+", 0, 0 },
+				token_t{ token_type::number, "2", 0, 0 },
+				token_t{ token_type::atom, "*", 0, 0 },
+				token_t{ token_type::number, "3", 0, 0 },
+		};
+		parse(tokens, tree, context);
+		BOOST_CHECK(tree.src == (tree_src_t{
+				{},{0, 2}, {},
+				{1, 4},{},
+				{3}
 		}));
 	}
 
