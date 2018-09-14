@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-//#include "function_priority_methods.hpp"
 #include "tokenizer.hpp"
 #include "token.hpp"
 #include "utils.hpp"
