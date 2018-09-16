@@ -7,7 +7,7 @@
 
 using namespace cuttle;
 
-BOOST_AUTO_TEST_SUITE(constructor_suite)
+BOOST_AUTO_TEST_SUITE(token_constructor_suite)
 
     BOOST_AUTO_TEST_CASE(case1) {
         token_t tok {token_type::number, "1", 2, 10};
@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(constructor_suite)
     
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(right_after_suite)
+BOOST_AUTO_TEST_SUITE(token_right_after_suite)
 
     BOOST_AUTO_TEST_CASE(case1) {
         token_t tok1 {token_type::number, "1", 1, 10};

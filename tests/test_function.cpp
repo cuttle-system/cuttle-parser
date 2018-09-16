@@ -8,7 +8,7 @@
 
 using namespace cuttle;
 
-BOOST_AUTO_TEST_SUITE(generates_basic_code_suite)
+BOOST_AUTO_TEST_SUITE(function_constructor_suite)
 
     BOOST_AUTO_TEST_CASE(case1) {
         function_t func {function_type::infix, 2};
