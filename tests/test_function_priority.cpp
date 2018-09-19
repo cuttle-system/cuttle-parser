@@ -36,7 +36,8 @@ BOOST_FIXTURE_TEST_SUITE(priority_initialize_suite, func_priors_fixture)
 			{ FUNCTION_ID_UNKNOWN, FUNCTION_PRIORITY_LAST, FUNCTION_ID_ERROR }
 		}));
 	}
-}
+
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_FIXTURE_TEST_SUITE(priority_push_basic_suite, func_priors_fixture)
 
