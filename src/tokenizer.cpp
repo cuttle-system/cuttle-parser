@@ -66,6 +66,26 @@ public:
 
 			advance = true;
 
+			register_set_type(macro_if, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_if;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+			});
+            register_range_type(macro_ps, [&] () {
+                reset_acc(tokens);
+                i_start -= symbol.length();
+                type = token_type::macro_ps;
+                advance = false;
+            });
+			register_range_type(macro_p, [&] () {
+				reset_acc(tokens);
+				i_start -= symbol.length();
+				type = token_type::macro_p;
+				advance = false;
+			});
 			register_range_type(formatted_string, [&] () {
 				reset_acc(tokens);
 				i_start -= symbol.length();

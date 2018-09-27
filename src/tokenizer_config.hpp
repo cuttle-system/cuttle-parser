@@ -11,7 +11,10 @@ namespace cuttle {
 		formatted_string,
 		normal_string,
 		separated_symbols,
-		comments
+		comments,
+        macro_if,
+        macro_ps,
+        macro_p
 	};
 
 	struct tokenizer_config_t {
@@ -20,6 +23,10 @@ namespace cuttle {
 		tokenizer_symbol_set_t separated_symbols;
 		tokenizer_range_map_t comments;
 
-		bool separate_digit_and_alpha;
+        tokenizer_symbol_set_t macro_if;
+        tokenizer_range_map_t macro_ps;
+        tokenizer_range_map_t macro_p;
+
+        bool separate_digit_and_alpha;
 	};
 }
