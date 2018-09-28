@@ -13,6 +13,7 @@ namespace cuttle {
 		separated_symbols,
 		comments,
         macro_if,
+        macro_pf,
         macro_ps,
         macro_p
 	};
@@ -25,6 +26,7 @@ namespace cuttle {
 
         tokenizer_symbol_set_t macro_if;
         tokenizer_range_map_t macro_ps;
+        tokenizer_range_map_t macro_pf;
         tokenizer_range_map_t macro_p;
 
         bool separate_digit_and_alpha;

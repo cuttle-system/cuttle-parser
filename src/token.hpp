@@ -10,6 +10,7 @@ namespace cuttle {
 		atom,
         macro_if,
         macro_p,
+        macro_pf,
         macro_ps,
 		unknown
 	};

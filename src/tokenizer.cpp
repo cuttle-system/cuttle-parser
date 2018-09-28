@@ -80,6 +80,12 @@ public:
                 type = token_type::macro_ps;
                 advance = false;
             });
+            register_range_type(macro_pf, [&] () {
+                reset_acc(tokens);
+                i_start -= symbol.length();
+                type = token_type::macro_pf;
+                advance = false;
+            });
 			register_range_type(macro_p, [&] () {
 				reset_acc(tokens);
 				i_start -= symbol.length();
