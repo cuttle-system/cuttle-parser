@@ -15,7 +15,7 @@ namespace cuttle {
 		unknown
 	};
 
-	using token_t = struct token {
+	struct token_t {
 		token_type type;
 		const std::string value;
 		const unsigned short line = 0u;
