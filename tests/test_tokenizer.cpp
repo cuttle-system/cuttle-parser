@@ -417,6 +417,40 @@ BOOST_AUTO_TEST_SUITE(tokenizer_test_suite)
         BOOST_CHECK(tokens[2].col == 4);
     }
 
+    BOOST_AUTO_TEST_CASE(tokenize_empty_string) {
+        tokenizer_config_t config = {{{"'", {"'"}}}, {{{"\"", {"\""}}}}, {}, {}, {}, {}, {}, {}, false};
+        tokens_t tokens;
+
+        tokenize(config, "2+5'' \"\" \"\"", tokens);
+
+        BOOST_CHECK_EQUAL(tokens.size(), 5u);
+
+        BOOST_CHECK(tokens[0].type == token_type::number);
+        BOOST_CHECK(tokens[0].value == "2");
+        BOOST_CHECK(tokens[0].line == 1);
+        BOOST_CHECK(tokens[0].col == 1);
+
+        BOOST_CHECK(tokens[1].type == token_type::atom);
+        BOOST_CHECK(tokens[1].value == "+5");
+        BOOST_CHECK(tokens[1].line == 1);
+        BOOST_CHECK(tokens[1].col == 2);
+
+        BOOST_CHECK(tokens[2].type == token_type::string);
+        BOOST_CHECK(tokens[2].value == "");
+        BOOST_CHECK(tokens[2].line == 1);
+        BOOST_CHECK(tokens[2].col == 4);
+
+        BOOST_CHECK(tokens[3].type == token_type::string);
+        BOOST_CHECK(tokens[3].value == "");
+        BOOST_CHECK(tokens[3].line == 1);
+        BOOST_CHECK(tokens[3].col == 7);
+
+        BOOST_CHECK(tokens[4].type == token_type::string);
+        BOOST_CHECK(tokens[4].value == "");
+        BOOST_CHECK(tokens[4].line == 1);
+        BOOST_CHECK(tokens[4].col == 10);
+    }
+
     BOOST_AUTO_TEST_CASE(tokenize_separated_symbols) {
         tokenizer_config_t config = {{}, {}, {{"+", "-", "*", "="}}, {}, {}, {}, {}, {}, false};
         tokens_t tokens;

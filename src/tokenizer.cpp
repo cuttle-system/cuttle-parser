@@ -156,7 +156,7 @@ public:
 
 	void reset_acc(tokens_t& tokens) {
 		range_found = false;
-		if (!acc.empty()) {
+		if (type != token_type::unknown) {
 			tokens.push_back(token_t{
 				type, acc, line_start, ++i_start
 			});
