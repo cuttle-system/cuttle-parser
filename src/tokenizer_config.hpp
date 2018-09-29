@@ -5,7 +5,8 @@
 
 namespace cuttle {
 	using tokenizer_symbol_set_t = std::set<std::string>;
-	using tokenizer_range_map_t = std::map<std::string, tokenizer_symbol_set_t>;
+    using tokenizer_range_map_t = std::map<std::string, tokenizer_symbol_set_t>;
+    using tokenizer_map_t = std::map<std::string, std::string>;
 
 	enum class tokenizer_range_type {
 		formatted_string,
@@ -23,6 +24,9 @@ namespace cuttle {
 		tokenizer_range_map_t normal_string;
 		tokenizer_symbol_set_t separated_symbols;
 		tokenizer_range_map_t comments;
+
+        tokenizer_map_t formatted_characters;
+        tokenizer_map_t formatted_characters_output;
 
         tokenizer_symbol_set_t macro_if;
         tokenizer_range_map_t macro_ps;

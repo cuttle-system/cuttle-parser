@@ -119,21 +119,34 @@ public:
 			});
 
 			if (!advance) {
-
+                //
 			} else if (range_found) {
-				if (range_type == tokenizer_range_type::formatted_string && str[i] == '\\') {
-					if (str[i] == '\\') {
-						if (i + 1 >= str.length()) {
-							throw parse_error("trailing '\\'");
-						} else {
-							acc += formatted_character(str[i], str[i + 1]);
-							++i;
-						}
-					}
-				}
-				else if (find_symbol(range_end, symbol)) {
-					reset_acc(tokens);
-				} else if (range_type == tokenizer_range_type::comments) {
+                bool formatted_character_found = false;
+
+                if (range_type == tokenizer_range_type::formatted_string) {
+                    if (!config.formatted_characters.empty()) {
+                        if (find_symbol(config.formatted_characters, symbol)) {
+                            acc += symbol;
+                            formatted_character_found = true;
+                        }
+                    } else {
+                        if (str[i] == '\\') {
+                            if (i + 1 >= str.length()) {
+                                throw parse_error("trailing '\\'");
+                            } else {
+                                acc += formatted_character(str[i], str[i + 1]);
+                                ++i;
+                                formatted_character_found = true;
+                            }
+                        }
+                    }
+                }
+
+                if (formatted_character_found) {
+                    //
+			    } else if (find_symbol(range_end, symbol)) {
+                    reset_acc(tokens);
+                } else if (range_type == tokenizer_range_type::comments) {
 					//
 				} else {
 					acc += str[i];
@@ -206,6 +219,27 @@ public:
 			}
             if (j == 0) break;
             val.pop_back();
+		}
+		return false;
+	}
+
+	/*
+	 * NOTE: current symbols can only be <= 3
+	 */
+	bool find_symbol(tokenizer_map_t container, std::string& symbol) {
+		tokenizer_map_t::iterator it;
+		std::string val;
+		unsigned int j = i;
+		construct_symbol_val(val, j);
+		for (; j >= i; --j) {
+			it = container.find(val);
+			if (it != container.end()) {
+				symbol = it->second;
+				i = j;
+				return true;
+			}
+			if (j == 0) break;
+			val.pop_back();
 		}
 		return false;
 	}
