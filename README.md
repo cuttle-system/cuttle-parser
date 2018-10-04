@@ -51,8 +51,9 @@ parse(tokens, tree, context); // Output stored in tree
 
 ### Manual process
 
-1. Create directory build under the project directory.
-2. Under the project directory run 
+1. Under the project directory execute `./scripts/get-deps.sh`
+2. Create directory build under the project directory.
+3. Under the project directory run 
     1. `cd build`
     2. `cmake ..`
     3. `make`
