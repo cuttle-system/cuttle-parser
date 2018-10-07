@@ -1,4 +1,4 @@
-[//]: <> ({% raw %})
+[//]: # ({% raw %})
 
 # Cuttle Parser
 A code parser to be used in Cuttle System
@@ -60,4 +60,4 @@ parse(tokens, tree, context); // Output stored in tree
     2. `cmake ..`
     3. `make`
 
-[//]: <> ({% endraw %})
+[//]: # ({% endraw %})
