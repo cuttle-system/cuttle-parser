@@ -42,14 +42,14 @@ inline int parse_function_call(
 				break;
 			}
 			if (context.funcs[check_func_id].type == function_type::postfix) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix function and receives " + std::to_string(func.args_number) + " arguments");
+				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
 			}
 			argi_prev = argi;
 
 			unsigned int j = 0;
 			while (j < tree.src[argi].size() && tree.src[argi][j] != CALL_TREE_SRC_UNDEFINED) ++j;
 			if (j < 1) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix function and receives " + std::to_string(func.args_number) + " arguments");
+				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
 			}
 			argi = tree.src[argi][j - 1];
 		}
@@ -58,7 +58,7 @@ inline int parse_function_call(
 			unsigned int j = 0;
 			while (j < tree.src[argi_prev].size() && tree.src[argi_prev][j] != CALL_TREE_SRC_UNDEFINED) ++j;
 			if (j < 1) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix function and receives " + std::to_string(func.args_number) + " arguments");
+				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
 			}
 			tree.src[argi_prev][j - 1] = i;
 		}
