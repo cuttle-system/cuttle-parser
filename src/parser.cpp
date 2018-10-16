@@ -72,7 +72,9 @@ inline int parse_function_call(
 			argn = 1;
 		}
 		for (; argn < func.args_number; ++argn, ++j) {
-			if (j >= tokens.size()) throw parse_error("'" + tokens[i].value + "' receives " + std::to_string(func.args_number) + " arguments");
+			if (j >= tokens.size()) {
+			    throw parse_error("'" + tokens[i].value + "' receives " + std::to_string(func.args_number) + " arguments");
+			}
 			tree.src[i][argn] = CALL_TREE_SRC_UNDEFINED;
 			unsigned int saved_j = j;
 			st.push_front(i);
