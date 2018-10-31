@@ -38,7 +38,8 @@ inline int parse_function_call(
 			else {
 				check_func_id = context.funcname_to_id[tokens[argi].value];
 			}
-			if (context.funcs_prior.priors[check_func_id].prior >= context.funcs_prior.priors[func_id].prior) {
+			if ((context.funcs[check_func_id].type == function_type::postfix && context.funcs_prior.priors[check_func_id].prior == context.funcs_prior.priors[func_id].prior)
+				|| context.funcs_prior.priors[check_func_id].prior > context.funcs_prior.priors[func_id].prior) {
 				break;
 			}
 			if (context.funcs[check_func_id].type == function_type::postfix) {
