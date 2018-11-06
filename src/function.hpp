@@ -6,7 +6,8 @@ namespace cuttle {
     enum function_type {
         prefix,
         infix,
-        postfix
+        postfix,
+        postprefix
     };
 
     using function_t = struct function {

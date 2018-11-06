@@ -66,7 +66,27 @@ inline int parse_function_call(
 		--before;
 	}
 
-	if (func.type == function_type::prefix || func.type == function_type::infix) {
+	if (func.type == function_type::postprefix) {
+        unsigned int j = i + 1;
+        unsigned int argn = 0;
+        for (; ; ++argn, ++j) {
+            if (j >= tokens.size()) {
+                throw parse_error("'" + tokens[i].value + "' is a postprefix function and must be enclosed with '" + context.end_function_name[func_id] + "'");
+            }
+            tree.src[i].resize(argn + 1);
+            tree.src[i][argn] = CALL_TREE_SRC_UNDEFINED;
+            unsigned int saved_j = j;
+            st.push_front(i);
+            parse_function_call(tokens, tree, context, j, argn, st);
+            if (tree.src[i][argn] == CALL_TREE_SRC_UNDEFINED) {
+                tree.src[i][argn] = saved_j;
+            }
+            if (tokens[saved_j].type == token_type::atom && tokens[saved_j].value == context.end_function_name[func_id]) {
+                break;
+            }
+        }
+        i = j;
+    } else if (func.type == function_type::prefix || func.type == function_type::infix) {
 		unsigned int j = i + 1;
 		unsigned int argn = 0;
 		if (func.type == function_type::infix) {
