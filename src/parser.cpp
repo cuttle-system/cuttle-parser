@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <list>
+#include <stack>
 #include <algorithm>
 #include "parse_error.hpp"
 #include "parser.hpp"
@@ -25,45 +26,56 @@ inline int parse_function_call(
 	tree.src[i].resize(func.args_number);
 
 	if (func.type == function_type::postfix || func.type == function_type::infix) {
-		if (st.empty()) {
-			throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
-		}
 		unsigned int argi = st.front();
 		unsigned int argi_prev = *(++st.cbegin());
-		while (!tree.src[argi].empty()) {
+		while (argi != CALL_TREE_SRC_UNDEFINED && !tree.src[argi].empty()) {
 			function_id_t check_func_id;
 			if (argi == tokens.size()) {
 				check_func_id = FUNCTION_ID_UNKNOWN;
-			}
-			else {
+			} else {
 				check_func_id = context.funcname_to_id[tokens[argi].value];
 			}
-			if ((context.funcs[check_func_id].type == function_type::postfix && context.funcs_prior.priors[check_func_id].prior == context.funcs_prior.priors[func_id].prior)
+			if ((context.funcs[check_func_id].type == function_type::postfix &&
+				 context.funcs_prior.priors[check_func_id].prior == context.funcs_prior.priors[func_id].prior)
 				|| context.funcs_prior.priors[check_func_id].prior > context.funcs_prior.priors[func_id].prior) {
 				break;
 			}
 			if (context.funcs[check_func_id].type == function_type::postfix) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
+                argi = CALL_TREE_SRC_UNDEFINED;
+//                break;
+				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " +
+								  std::to_string(func.args_number) + " arguments");
 			}
 			argi_prev = argi;
 
-			unsigned int j = 0;
-			while (j < tree.src[argi].size() && tree.src[argi][j] != CALL_TREE_SRC_UNDEFINED) ++j;
+			auto j = tree.src[argi].size();
+			while (j >= 0 && tree.src[argi][j] == CALL_TREE_SRC_UNDEFINED) --j;
 			if (j < 1) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
+//                argi = CALL_TREE_SRC_UNDEFINED;
+//                break;
+				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " +
+								  std::to_string(func.args_number) + " arguments");
 			}
-			argi = tree.src[argi][j - 1];
+            argi = tree.src[argi][j - 1];
 		}
-		tree.src[i][0] = argi;
-		if (argi_prev != CALL_TREE_SRC_UNDEFINED) {
-			unsigned int j = 0;
-			while (j < tree.src[argi_prev].size() && tree.src[argi_prev][j] != CALL_TREE_SRC_UNDEFINED) ++j;
-			if (j < 1) {
-				throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " + std::to_string(func.args_number) + " arguments");
-			}
-			tree.src[argi_prev][j - 1] = i;
+		if (argi == CALL_TREE_SRC_UNDEFINED) {
+		    tree.src[i][0] = CALL_TREE_SRC_UNDEFINED;
+        } else {
+            tree.src[i][0] = argi;
+            if (argi_prev != CALL_TREE_SRC_UNDEFINED) {
+				auto j = tree.src[argi_prev].size();
+				while (j >= 0 && tree.src[argi_prev][j] == CALL_TREE_SRC_UNDEFINED) --j;
+				if (j < 1) {
+					throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " +
+									  std::to_string(func.args_number) + " arguments");
+                } else {
+                    tree.src[argi_prev][j - 1] = i;
+                }
+				--before;
+			} else {
+                tree.src[i][0] = CALL_TREE_SRC_UNDEFINED;
+            }
 		}
-		--before;
 	}
 
 	if (func.type == function_type::prefix || func.type == function_type::infix) {
@@ -97,9 +109,17 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 	tree.src.resize(tokens.size() + 1);
 	auto& args = tree.src.back();
 	unsigned int argn = 0;
+//	int prev_i = -1;
 	for (; i < tokens.size(); ++i, ++argn) {
 		unsigned int saved_i = i;
-		parse_function_call(tokens, tree, context, i, argn, { (unsigned int) tree.src.size() - 1, CALL_TREE_SRC_UNDEFINED });
+//		if (prev_i != -1) {
+//            parse_function_call(tokens, tree, context, i, argn,
+//                                {prev_i, (unsigned int) tree.src.size() - 1, CALL_TREE_SRC_UNDEFINED});
+//        } else {
+            parse_function_call(tokens, tree, context, i, argn,
+                                {(unsigned int) tree.src.size() - 1, CALL_TREE_SRC_UNDEFINED});
+
+//        }
 
 		if (args.size() <= argn) {
 			args.push_back(saved_i);
@@ -107,5 +127,6 @@ void cuttle::parse(const tokens_t& tokens, call_tree_t& tree, context_t& context
 			if (args[argn] != CALL_TREE_SRC_UNDEFINED) continue;
 			args[argn] = saved_i;
 		}
+//		prev_i = saved_i;
 	}
 }
