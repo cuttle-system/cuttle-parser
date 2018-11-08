@@ -7,7 +7,8 @@ namespace cuttle {
         prefix,
         infix,
         postfix,
-        postprefix
+        postprefix,
+        postinfix
     };
 
     using function_t = struct function {

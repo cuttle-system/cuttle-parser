@@ -12,7 +12,7 @@ namespace cuttle {
 
     struct context_t {
 		funcname_to_id_t funcname_to_id;
-		funcs_t funcs;
+        funcs_t funcs;
 		function_priority_table_t funcs_prior;
 		std::vector<std::string> end_function_name;
     };
