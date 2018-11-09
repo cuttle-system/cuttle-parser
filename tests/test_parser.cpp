@@ -640,8 +640,9 @@ struct parses_default_brackets_suite_fixture {
     void setup() {
         initialize(context);
 
-        add(context, ";", function_t{ function_type::infix, 2 }, FUNCTION_ID_UNKNOWN);
-        add(context, "{", function_t{ function_type::prefix, 1 }, FUNCTION_ID_UNKNOWN);
+        add(context, ";", function_t{ function_type::postfix, 1 }, FUNCTION_ID_UNKNOWN);
+        add(context, "{", function_t{ function_type::postprefix, 0 }, FUNCTION_ID_UNKNOWN, "}");
+        add(context, "(", function_t{ function_type::postprefix, 0 }, FUNCTION_ID_UNKNOWN, ")");
     }
 };
 
@@ -660,7 +661,41 @@ BOOST_FIXTURE_TEST_SUITE(parses_default_brackets_suite,
         };
         parse(tokens, tree, context);
         BOOST_CHECK(tree.src == (tree_src_t{
-                {2}, {}, {1, 4}, {}, {3, 5}, {}, {0}
+                {2, 4, 5}, {}, {1}, {}, {3}, {}, {0}
+        }));
+    }
+
+    BOOST_AUTO_TEST_CASE(case2) {
+        call_tree_t tree;
+        std::vector<token_t> tokens = {
+                token_t{ token_type::atom, "{", 0, 0 },
+                token_t{ token_type::atom, "foo", 0, 0 },
+                token_t{ token_type::atom, ";", 0, 0 },
+                token_t{ token_type::atom, "bar", 0, 0 },
+                token_t{ token_type::atom, ";", 0, 0 },
+                token_t{ token_type::atom, "{", 0, 0 },
+                token_t{ token_type::atom, "}", 0, 0 },
+                token_t{ token_type::atom, ";", 0, 0 },
+                token_t{ token_type::atom, "}", 0, 0 },
+        };
+        parse(tokens, tree, context);
+        BOOST_CHECK(tree.src == (tree_src_t{
+                {2, 4, 7, 8}, {}, {1}, {}, {3}, {6}, {}, {5}, {}, {0}
+        }));
+    }
+
+    BOOST_AUTO_TEST_CASE(case3) {
+        call_tree_t tree;
+        std::vector<token_t> tokens = {
+                token_t{ token_type::atom, "(", 0, 0 },
+                token_t{ token_type::atom, "1", 0, 0 },
+                token_t{ token_type::atom, ",", 0, 0 },
+                token_t{ token_type::atom, "2", 0, 0 },
+                token_t{ token_type::atom, ")", 0, 0 },
+        };
+        parse(tokens, tree, context);
+        BOOST_CHECK(tree.src == (tree_src_t{
+                {1, 2, 3, 4}, {}, {}, {}, {}, {0}
         }));
     }
 
