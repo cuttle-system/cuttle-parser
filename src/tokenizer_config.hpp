@@ -14,8 +14,14 @@ namespace cuttle {
 		separated_symbols,
 		comments,
         macro_if,
-        macro_pf,
+        macro_elif,
+        macro_else,
+        macro_eq,
+        macro_block_start,
+        macro_block_end,
+        macro_state,
         macro_ps,
+        macro_pf,
         macro_p
 	};
 
@@ -28,10 +34,16 @@ namespace cuttle {
         tokenizer_map_t formatted_characters;
         tokenizer_map_t formatted_characters_output;
 
-        tokenizer_symbol_set_t macro_if;
+		tokenizer_symbol_set_t macro_if;
+		tokenizer_symbol_set_t macro_elif;
+		tokenizer_symbol_set_t macro_else;
+		tokenizer_symbol_set_t macro_eq;
+        tokenizer_symbol_set_t macro_block_start;
+        tokenizer_symbol_set_t macro_block_end;
+        tokenizer_range_map_t macro_state;
         tokenizer_range_map_t macro_ps;
-        tokenizer_range_map_t macro_pf;
-        tokenizer_range_map_t macro_p;
+		tokenizer_range_map_t macro_pf;
+		tokenizer_range_map_t macro_p;
 
         bool separate_digit_and_alpha;
 	};

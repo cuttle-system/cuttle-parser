@@ -74,6 +74,52 @@ public:
                 reset_acc(tokens);
                 advance = false;
 			});
+            register_set_type(macro_elif, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_elif;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+            });
+            register_set_type(macro_else, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_else;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+            });
+            register_set_type(macro_eq, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_eq;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+            });
+            register_set_type(macro_block_start, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_block_start;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+            });
+            register_set_type(macro_block_end, [&] () {
+                reset_acc(tokens);
+                type = token_type::macro_block_end;
+                acc = symbol;
+                i_start -= symbol.length();
+                reset_acc(tokens);
+                advance = false;
+            });
+            register_range_type(macro_state, [&] () {
+                reset_acc(tokens);
+                i_start -= symbol.length();
+                type = token_type::macro_state;
+                advance = false;
+            });
             register_range_type(macro_ps, [&] () {
                 reset_acc(tokens);
                 i_start -= symbol.length();

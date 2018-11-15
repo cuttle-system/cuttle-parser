@@ -60,23 +60,21 @@ inline int parse_function_call(
                 break;
             }
             if (func_type == function_type::postfix) {
-                throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " +
-                                  std::to_string(func.args_number) + " arguments");
+                argi = CALL_TREE_SRC_NIL;
+                break;
             }
             argi_prev = argi;
 
             tree_src_element_t j = 0;
             while (j < tree.src[argi].size() && tree.src[argi][j] != CALL_TREE_SRC_UNDEFINED) ++j;
             if (j < 1) {
-//                throw parse_error("'" + tokens[i].value + "' is a postfix or infix function and receives " +
-//                                  std::to_string(func.args_number) + " arguments");
                 argi = CALL_TREE_SRC_NIL;
                 break;
             }
-//            else if (j == 1 && (func_type == function_type::postinfix || func_type == function_type::infix)) {
-//                argi = CALL_TREE_SRC_NIL;
-//                break;
-//            }
+            if (func_type == infix && j < 2) {
+                argi = CALL_TREE_SRC_NIL;
+                break;
+            }
             argi = tree.src[argi][j - 1];
         }
         if (argi == CALL_TREE_SRC_NIL) {
