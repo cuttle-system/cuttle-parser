@@ -20,37 +20,62 @@ cuttle::token_type cuttle::token_type_from_string(const std::string &str) {
         return token_type::macro_pf ;
     } else if (str == "macro_ps") {
         return token_type::macro_ps;
+    } else if (str == "macro_elif") {
+        return token_type::macro_elif;
+    } else if (str == "macro_else") {
+        return token_type::macro_else;
+    } else if (str == "macro_eq") {
+        return token_type::macro_eq;
+    } else if (str == "macro_block_start") {
+        return token_type::macro_block_start;
+    } else if (str == "macro_block_end") {
+        return token_type::macro_block_end;
+    } else if (str == "macro_set") {
+        return token_type::macro_set;
+    } else if (str == "macro_get") {
+        return token_type::macro_get;
     } else {
         return token_type::unknown;
     }
 }
 
-std::ostream &operator<<(std::ostream &stream, cuttle::token_type const &type) {
-    using namespace cuttle;
+const char *cuttle::token_type_to_string(cuttle::token_type const &type) {
     switch (type) {
         case token_type::number:
-            stream << "number";
-            break;
+            return "number";
         case token_type::string:
-            stream << "string";
-            break;
+            return "string";
         case token_type::atom:
-            stream << "atom";
-            break;
+            return "atom";
         case token_type::macro_if:
-            stream << "macro_if";
-            break;
+            return "macro_if";
         case token_type::macro_p:
-            stream << "macro_p";
-            break;
+            return "macro_p";
         case token_type::macro_pf:
-            stream << "macro_pf";
-            break;
+            return "macro_pf";
         case token_type::macro_ps:
-            stream << "macro_ps";
-            break;
-        case token_type::unknown:
-            stream << "unknown";
+            return "macro_ps";
+        case token_type::macro_elif:
+            return "macro_elif";
+        case token_type::macro_else:
+            return "macro_else";
+        case token_type::macro_eq:
+            return "macro_eq";
+        case token_type::macro_block_start:
+            return "macro_block_start";
+        case token_type::macro_block_end:
+            return "macro_block_end";
+        case token_type::macro_set:
+            return "macro_set";
+        case token_type::macro_get:
+            return "macro_get";
+        default:
+            return "unknown";
     }
+}
+
+std::ostream &operator<<(std::ostream &stream, cuttle::token_type const &type) {
+    using namespace cuttle;
+    stream << token_type_to_string(type);
     return stream;
 }

@@ -21,7 +21,7 @@ inline int parse_function_call(
 ) {
     using namespace cuttle;
 
-    if (tokens[i].type != token_type::atom) {
+    if (tokens[i].type == token_type::string || tokens[i].type == token_type::number || tokens[i].type == token_type::unknown) {
         return false;
     }
 
@@ -117,7 +117,7 @@ inline int parse_function_call(
             if (tree.src[i][argn] == CALL_TREE_SRC_UNDEFINED) {
                 tree.src[i][argn] = saved_j;
             }
-            if (tokens[saved_j].type == token_type::atom &&
+            if (tokens[saved_j].type != token_type::string && tokens[saved_j].type != token_type::number &&
                 tokens[saved_j].value == context.end_function_name[func_id]) {
                 tree.finished_funcs.insert(i);
                 break;

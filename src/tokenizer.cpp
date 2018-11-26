@@ -114,12 +114,22 @@ public:
                 reset_acc(tokens);
                 advance = false;
             });
-            register_range_type(macro_state, [&] () {
-                reset_acc(tokens);
-                i_start -= symbol.length();
-                type = token_type::macro_state;
-                advance = false;
-            });
+			register_set_type(macro_set, [&] () {
+				reset_acc(tokens);
+				type = token_type::macro_set;
+				acc = symbol;
+				i_start -= symbol.length();
+				reset_acc(tokens);
+				advance = false;
+			});
+			register_set_type(macro_get, [&] () {
+				reset_acc(tokens);
+				type = token_type::macro_get;
+				acc = symbol;
+				i_start -= symbol.length();
+				reset_acc(tokens);
+				advance = false;
+			});
             register_range_type(macro_ps, [&] () {
                 reset_acc(tokens);
                 i_start -= symbol.length();

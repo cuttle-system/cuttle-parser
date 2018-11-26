@@ -13,13 +13,6 @@ namespace cuttle {
 		normal_string,
 		separated_symbols,
 		comments,
-        macro_if,
-        macro_elif,
-        macro_else,
-        macro_eq,
-        macro_block_start,
-        macro_block_end,
-        macro_state,
         macro_ps,
         macro_pf,
         macro_p
@@ -40,7 +33,8 @@ namespace cuttle {
 		tokenizer_symbol_set_t macro_eq;
         tokenizer_symbol_set_t macro_block_start;
         tokenizer_symbol_set_t macro_block_end;
-        tokenizer_range_map_t macro_state;
+        tokenizer_symbol_set_t macro_set;
+        tokenizer_symbol_set_t macro_get;
         tokenizer_range_map_t macro_ps;
 		tokenizer_range_map_t macro_pf;
 		tokenizer_range_map_t macro_p;
