@@ -24,9 +24,9 @@ namespace cuttle {
 
 	struct token_t {
 		token_type type;
-		const std::string value;
-		const unsigned short line = 0u;
-		const unsigned short col = 0u;
+		std::string value;
+		unsigned short line = 0u;
+		unsigned short col = 0u;
 	};
 
 	using tokens_t = std::vector<token_t>;

@@ -44,7 +44,7 @@ public:
 	unsigned int i;
 	unsigned short line;
 	
-	const unsigned int symbol_check_length = 10;
+	const unsigned int symbol_check_length = 7;
 
 	std::string symbol;
 
