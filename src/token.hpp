@@ -18,6 +18,10 @@ namespace cuttle {
 		macro_get,
         macro_p,
         macro_pf,
+        macro_pva,
+        macro_pvn,
+        macro_pvs,
+        macro_pv,
         macro_ps,
 		unknown
 	};
